@@ -1,36 +1,99 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ระบบทำเนียบและแสดงผลอัพเดทรายชื่อผู้บริหารภาครัฐ (ThaiGov Directory & Executive Management System)
 
-## Getting Started
+ระบบสารสนเทศแบบบูรณาการสำหรับจัดเก็บ ค้นหา แสดงผล และปรับปรุงทำเนียบรายชื่อผู้บริหารหน่วยงานภาครัฐ ครอบคลุม **4 ระดับการบริหารราชการแผ่นดินไทย** ได้แก่:
 
-First, run the development server:
+1. 🏛️ **ราชการส่วนกลาง (ส่วนราชการ)**: สำนักนายกรัฐมนตรี, กระทรวง, กรม, สำนัก/กอง, รัฐวิสาหกิจ
+2. 🗺️ **ราชการส่วนภูมิภาค (ภูมิภาค)**: 76 จังหวัด, ศาลากลางจังหวัด, หัวหน้าส่วนราชการประจำจังหวัด
+3. 🏢 **ส่วนราชการระดับอำเภอ (อำเภอ)**: ที่ว่าการอำเภอ, นายอำเภอ, ปลัดอำเภอ, หัวหน้าส่วนราชการประจำอำเภอ
+4. 🏙️ **องค์กรปกครองส่วนท้องถิ่น (ท้องถิ่น / อปท.)**: องค์การบริหารส่วนจังหวัด (อบจ.), เทศบาลนคร, เทศบาลเมือง, เทศบาลตำบล, องค์การบริหารส่วนตำบล (อบต.), กรุงเทพมหานคร และเมืองพัทยา
 
+---
+
+## ✨ คุณสมบัติเด่นของระบบ (Key Features)
+
+### 1. 🔍 ระบบทำเนียบและสืบค้นอัจฉริยะ (Public Directory Portal)
+- **Multi-Level Cascading Search**: ค้นหาด่วนด้วยชื่อ-นามสกุล, ตำแหน่ง, สังกัด หรือค้นหาแบบเจาะจงตามระดับการบริหาร
+- **สลับโหมดมุมมองได้ 2 รูปแบบ**:
+  - **Card Grid View**: การ์ดรูปถ่ายและข้อมูลผู้บริหารสวยงาม พร้อมป้ายสถานะมาตรฐาน
+  - **Table View**: รายการตารางแบบละเอียด เหมาะสำหรับการเปิดดูข้อมูลปริมาณมาก
+- **Executive Profile Modal**: ป๊อปอัปแสดงประวัติอย่างละเอียด, คำสั่งแต่งตั้ง, ช่องทางการติดต่อ (เบอร์โทร/อีเมล/เว็บไซต์), และไทม์ไลน์ประวัติการดำรงตำแหน่งย้อนหลัง
+- **ส่งออกข้อมูล (Export)**: ดาวน์โหลดผลการค้นหาเป็น **Excel (.xlsx)** หรือสั่ง **พิมพ์ทำเนียบ (Print/PDF)** ได้ทันที
+
+### 2. 🌳 แผนผังสายการบังคับบัญชาแบบ Interactive (Visual Org Chart Tree)
+- แสดงโครงสร้างความสัมพันธ์แม่-ลูก (Parent-Child Hierarchy) ของหน่วยงานและรายชื่อผู้บริหาร
+- สามารถคลิกยุบ/ขยายกิ่งสาขาได้ และคลิกดูรายละเอียดผู้บริหารในแต่ละโหนดได้ทันที
+
+### 3. ⚙️ ศูนย์ควบคุมและจัดการข้อมูลสำหรับผู้ดูแลระบบ (Admin Management Hub)
+- **Executive Management (CRUD)**: เพิ่ม แก้ไข ลบ และปรับปรุงข้อมูลผู้บริหาร
+- **Smart Transfer & Promotion Engine**: ระบบสลับการโยกย้ายตำแหน่ง ที่สร้างประวัติการดำรงตำแหน่ง (Position History) และบันทึกเลขอ้างอิงคำสั่งแต่งตั้งโดยอัตโนมัติ
+- **Status Controls**: รองรับสถานะ `ปฏิบัติหน้าที่ปกติ (Active)`, `รักษาราชการแทน (Acting)`, `ตำแหน่งว่าง (Vacant)`, และ `พ้นจากตำแหน่ง (Retired)`
+- **Bulk Excel Import/Export**: อัปโหลดไฟล์ Excel พร้อมระบบ Preview & Validation ตรวจสอบความถูกต้องก่อนบันทึกจริง พร้อมปุ่มดาวน์โหลด Template Excel มาตรฐาน
+- **Organization Structure Manager**: เพิ่มและแก้ไขหน่วยงาน กำหนดสังกัด และความสัมพันธ์ในโครงสร้างราชการ
+- **Audit Trail & History**: บันทึกทุกกิจกรรมการเพิ่ม แก้ไข ลบ โยกย้าย และนำเข้า เพื่อความโปร่งใสและตรวจสอบย้อนหลังได้
+
+---
+
+## 🛠️ เทคโนโลยีที่ใช้ (Tech Stack)
+
+- **Frontend**: Next.js 14+ (App Router), React 18, Tailwind CSS, Lucide Icons, Thai Google Fonts (Prompt & Sarabun)
+- **Backend**: Next.js Server Components & Route Handlers, Web Response API
+- **Database**: SQLite + Prisma ORM (Zero-configuration, Portable, High-Performance)
+- **Spreadsheet Processing**: `xlsx` (SheetJS)
+
+---
+
+## 🚀 วิธีการติดตั้งและรันระบบ (Quick Start)
+
+### 1. ติดตั้ง Dependencies
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. สร้างฐานข้อมูลและนำเข้าข้อมูลตั้งต้น (Database Setup & Seed)
+```bash
+npx prisma db push
+npm run seed
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. เริ่มต้นรันระบบ
+```bash
+# โหมดพัฒนา (Development)
+npm run dev
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# หรือ โหมด Production
+npm run build
+npm run start -- -p 3005
+```
 
-## Learn More
+เปิดเว็บเบราว์เซอร์และเข้าไปที่: **`http://localhost:3005`**
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📍 แผนผังหน้าจอและ Route ภายในระบบ
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| URL Route | คำอธิบาย |
+|---|---|
+| `/` | หน้าทำเนียบผู้บริหารภาครัฐ (ค้นหา, กรอง 4 ระดับ, Grid/Table, Modal รายละเอียด) |
+| `/org-chart` | หน้าแผนผังโครงสร้างสายการบังคับบัญชา (Interactive Tree View) |
+| `/admin` | แดชบอร์ดภาพรวม สถิติผู้บริหาร และ Audit Logs ล่าสุด |
+| `/admin/executives` | จัดการรายชื่อผู้บริหาร (เพิ่ม, แก้ไข, ย้ายตำแหน่ง, ปรับปรุงสถานะ) |
+| `/admin/organizations` | จัดการโครงสร้างกระทรวง กรม จังหวัด อำเภอ และ อปท. |
+| `/admin/import-export` | ระบบนำเข้าและส่งออกข้อมูลแบบกลุ่มด้วยไฟล์ Excel |
+| `/admin/history` | ประวัติการปรับปรุงระบบ (Audit Logs) และประวัติการโยกย้ายตำแหน่ง |
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🗄️ โครงสร้าง API Endpoints
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `GET /api/stats` : สรุปสถิติจำนวนผู้บริหารแยกตามระดับและสถานะ
+- `GET /api/executives` : ค้นหาและกรองข้อมูลผู้บริหาร (รองรับ q, level, province, district, category, status)
+- `POST /api/executives` : เพิ่มผู้บริหารใหม่
+- `GET /api/executives/:id` : เรียกดูข้อมูลผู้บริหารและประวัติการดำรงตำแหน่ง
+- `PUT /api/executives/:id` : แก้ไขข้อมูลผู้บริหาร / บันทึกการโยกย้ายตำแหน่ง
+- `DELETE /api/executives/:id` : ลบข้อมูลผู้บริหาร
+- `GET /api/organizations` : รายการหน่วยงาน (รองรับ `?tree=true` สำหรับโครงสร้างต้นไม้)
+- `POST /api/organizations` : เพิ่มหน่วยงานใหม่
+- `GET /api/import-export?type=template` : ดาวน์โหลดไฟล์แม่แบบ Excel
+- `GET /api/import-export?type=export` : ส่งออกทำเนียบผู้บริหารเป็นไฟล์ Excel
+- `POST /api/import-export` : นำเข้าไฟล์ Excel เข้าสู่ฐานข้อมูล
+- `GET /api/history` : ประวัติกิจกรรม Audit Logs และ Position Transfers

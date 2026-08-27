@@ -1,0 +1,80 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Organization {
+  id          String         @id @default(cuid())
+  code        String?        @unique
+  name        String
+  nameEn      String?
+  level       String         // CENTRAL, PROVINCIAL, DISTRICT, LOCAL
+  category    String         // กระทรวง, กรม, จังหวัด, อำเภอ, อบจ., เทศบาลนคร, เทศบาลเมือง, เทศบาลตำบล, อบต., องค์กรพิเศษ
+  ministry    String?        // สังกัดกระทรวง
+  province    String?        // จังหวัด
+  district    String?        // อำเภอ
+  parentId    String?
+  parent      Organization?  @relation("OrgTree", fields: [parentId], references: [id])
+  children    Organization[] @relation("OrgTree")
+  address     String?
+  phone       String?
+  email       String?
+  website     String?
+  orderIndex  Int            @default(0)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  executives  Executive[]
+}
+
+model Executive {
+  id              String            @id @default(cuid())
+  prefix          String            // คำนำหน้านาม
+  firstName       String            // ชื่อ
+  lastName        String            // นามสกุล
+  position        String            // ตำแหน่ง
+  positionLevel   String?           // ระดับตำแหน่ง (เช่น บริหารระดับสูง, อำนวยการระดับสูง, ผู้บริหารท้องถิ่น)
+  organizationId  String
+  organization    Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  status          String            @default("ACTIVE") // ACTIVE, ACTING, VACANT, RETIRED
+  appointmentDate DateTime?
+  endDate         DateTime?
+  orderReference  String?           // เลขที่คำสั่งแต่งตั้ง
+  phone           String?
+  email           String?
+  avatarUrl       String?
+  bio             String?
+  orderIndex      Int               @default(0)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  histories       PositionHistory[]
+}
+
+model PositionHistory {
+  id               String    @id @default(cuid())
+  executiveId      String
+  executive        Executive @relation(fields: [executiveId], references: [id], onDelete: Cascade)
+  previousPosition String?
+  newPosition      String
+  organizationName String
+  effectiveDate    DateTime  @default(now())
+  orderReference   String?
+  notes            String?
+  createdAt        DateTime  @default(now())
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  action      String   // CREATE, UPDATE, DELETE, IMPORT, TRANSFER
+  entityType  String   // EXECUTIVE, ORGANIZATION
+  entityId    String
+  title       String
+  details     String?  // JSON string
+  performedBy String   @default("ผู้ดูแลระบบ")
+  timestamp   DateTime @default(now())
+}
