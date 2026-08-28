@@ -392,6 +392,13 @@ async function main() {
 
     execCount++;
     const isVacant = item.firstName === 'ตำแหน่งว่าง';
+    let avatarUrl = `/avatars/exec_${orgId}_${execCount}.svg`;
+    if (item.firstName.includes('เอกวิทย์')) avatarUrl = '/avatars/ekavit_meepian.jpg';
+    else if (item.firstName.includes('พงศธร')) avatarUrl = '/avatars/pongsatorn.jpg';
+    else if (item.firstName.includes('องครักษ์')) avatarUrl = '/avatars/ongkarak.jpg';
+    else if (item.firstName.includes('ดงพล')) avatarUrl = '/avatars/dongpol.jpg';
+    else if (item.firstName.includes('ธีระพล') || item.lastName.includes('ธีระพล')) avatarUrl = '/avatars/teerapon.jpg';
+
     const createdExec = await prisma.executive.create({
       data: {
         prefix: item.prefix,
@@ -405,6 +412,7 @@ async function main() {
         orderReference: 'คำสั่งแต่งตั้งตามทำเนียบส่วนราชการจังหวัดปทุมธานี (2567-2569)',
         phone: item.phone || null,
         email: null,
+        avatarUrl: avatarUrl,
         bio: `ผู้บริหารสังกัด ${classification.orgName} จังหวัดปทุมธานี`,
         orderIndex: execCount
       }

@@ -17,6 +17,7 @@ import {
   PlusCircle,
   ChevronRight,
   Loader2,
+  Camera,
 } from 'lucide-react';
 
 export default function AdminDashboardPage() {
@@ -40,6 +41,14 @@ export default function AdminDashboardPage() {
       icon: Users,
       color: 'bg-blue-600',
       badge: `${stats?.executives.total || 0} รายชื่อ`,
+    },
+    {
+      title: 'ค้นหา & ใส่รูปถ่ายจริง (Photo Studio)',
+      desc: 'ค้นหารูปจริงบน Google Images, เว็บหน่วยงานราชการ และลากรูปหลายคนมาจับคู่อัตโนมัติ',
+      href: '/admin/photo-matcher',
+      icon: Camera,
+      color: 'bg-purple-600',
+      badge: 'Real Photo Studio',
     },
     {
       title: 'นำเข้า & ส่งออก Excel',

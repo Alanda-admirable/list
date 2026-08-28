@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   X,
   Building,
@@ -12,6 +12,9 @@ import {
   History,
   Printer,
   Globe,
+  Upload,
+  Camera,
+  Loader2,
 } from 'lucide-react';
 import { Executive } from './ExecutiveCard';
 import { STATUS_LABELS } from '@/lib/thai-data';
@@ -19,9 +22,58 @@ import { STATUS_LABELS } from '@/lib/thai-data';
 interface ModalProps {
   executive: Executive | null;
   onClose: () => void;
+  onAvatarUpdated?: (id: string, newUrl: string) => void;
 }
 
-export default function ExecutiveModal({ executive, onClose }: ModalProps) {
+export default function ExecutiveModal({ executive, onClose, onAvatarUpdated }: ModalProps) {
+  const [avatar, setAvatar] = useState<string | null>(executive?.avatarUrl || null);
+  const [uploading, setUploading] = useState(false);
+
+  useEffect(() => {
+    setAvatar(executive?.avatarUrl || null);
+  }, [executive]);
+
+  // Handle Ctrl+V Paste anywhere while modal is open
+  useEffect(() => {
+    if (!executive) return;
+
+    const handlePaste = async (e: ClipboardEvent) => {
+      const items = e.clipboardData?.items;
+      if (!items) return;
+
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf('image') !== -1) {
+          const file = items[i].getAsFile();
+          if (file) {
+            setUploading(true);
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('executiveId', executive.id);
+
+            try {
+              const res = await fetch('/api/upload', {
+                method: 'POST',
+                body: formData,
+              });
+              const data = await res.json();
+              if (data.success && data.url) {
+                setAvatar(data.url);
+                if (onAvatarUpdated) onAvatarUpdated(executive.id, data.url);
+              }
+            } catch (err) {
+              console.error('Failed to upload pasted image', err);
+            } finally {
+              setUploading(false);
+            }
+          }
+        }
+      }
+    };
+
+    window.addEventListener('paste', handlePaste);
+    return () => window.removeEventListener('paste', handlePaste);
+  }, [executive, onAvatarUpdated]);
+
   if (!executive) return null;
 
   const statusInfo = STATUS_LABELS[executive.status] || STATUS_LABELS.ACTIVE;
@@ -29,6 +81,29 @@ export default function ExecutiveModal({ executive, onClose }: ModalProps) {
 
   const handlePrint = () => {
     window.print();
+  };
+
+  const handleFileInput = async (file: File) => {
+    setUploading(true);
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('executiveId', executive.id);
+
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
+      if (data.success && data.url) {
+        setAvatar(data.url);
+        if (onAvatarUpdated) onAvatarUpdated(executive.id, data.url);
+      }
+    } catch (err) {
+      console.error('Failed to upload file', err);
+    } finally {
+      setUploading(false);
+    }
   };
 
   return (
@@ -48,18 +123,56 @@ export default function ExecutiveModal({ executive, onClose }: ModalProps) {
 
           <div className="flex flex-col sm:flex-row items-center sm:items-start space-y-4 sm:space-y-0 sm:space-x-6">
             {/* Avatar Profile */}
-            <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden bg-white/10 border-4 border-white/20 shadow-xl flex-shrink-0">
-              {executive.avatarUrl && !isVacant ? (
-                <img
-                  src={executive.avatarUrl}
-                  alt={`${executive.firstName} ${executive.lastName}`}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center bg-slate-800 text-slate-300">
-                  <User className="w-12 h-12" />
-                </div>
-              )}
+            <div className="relative group/avatar flex-shrink-0">
+              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden bg-white/10 border-4 border-white/20 shadow-xl flex items-center justify-center relative">
+                {uploading ? (
+                  <div className="flex flex-col items-center justify-center text-white">
+                    <Loader2 className="w-8 h-8 animate-spin text-amber-400" />
+                    <span className="text-[10px] text-amber-200 mt-1 font-semibold">กำลังอัปโหลด...</span>
+                  </div>
+                ) : avatar && !isVacant ? (
+                  <img
+                    src={avatar}
+                    alt={`${executive.firstName} ${executive.lastName}`}
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-cover"
+                    onError={() => setAvatar(null)}
+                  />
+                ) : (
+                  <label className="w-full h-full flex flex-col items-center justify-center bg-white/10 hover:bg-white/20 cursor-pointer text-slate-300 transition-colors p-2 text-center">
+                    <Camera className="w-8 h-8 text-amber-300 mb-1" />
+                    <span className="text-[10px] text-amber-200 font-bold leading-tight">คลิกใส่รูป</span>
+                    <span className="text-[8px] text-white/70">หรือกด Ctrl+V</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        const f = e.target.files?.[0];
+                        if (f) handleFileInput(f);
+                      }}
+                    />
+                  </label>
+                )}
+
+                {/* Hover overlay to change photo */}
+                {avatar && !uploading && (
+                  <label className="absolute inset-0 bg-slate-950/70 opacity-0 group-hover/avatar:opacity-100 flex flex-col items-center justify-center text-white transition-opacity cursor-pointer text-center p-1">
+                    <Upload className="w-5 h-5 text-amber-300 mb-0.5" />
+                    <span className="text-[10px] font-bold">เปลี่ยนรูป</span>
+                    <span className="text-[8px] text-slate-300">คลิกหรือ Ctrl+V</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        const f = e.target.files?.[0];
+                        if (f) handleFileInput(f);
+                      }}
+                    />
+                  </label>
+                )}
+              </div>
             </div>
 
             {/* Header Text */}

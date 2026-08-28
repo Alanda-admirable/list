@@ -47,6 +47,8 @@ model Executive {
   phone           String?
   email           String?
   avatarUrl       String?
+  photoVerified   Boolean           @default(false)
+  photoSource     String?
   bio             String?
   orderIndex      Int               @default(0)
   createdAt       DateTime          @default(now())

@@ -111,11 +111,24 @@ export default function ExecutiveCard({
                 <img
                   src={executive.avatarUrl}
                   alt={`${executive.firstName} ${executive.lastName}`}
+                  referrerPolicy="no-referrer"
                   className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                    if (e.currentTarget.parentElement) {
+                      e.currentTarget.parentElement.innerHTML = `
+                        <div class="w-full h-full flex flex-col items-center justify-center bg-slate-100 text-slate-400">
+                          <svg class="w-8 h-8 text-slate-300" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                          <span class="text-[8px] text-slate-400 font-medium">รอรูปถ่าย</span>
+                        </div>
+                      `;
+                    }
+                  }}
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200 text-slate-400">
-                  <User className="w-8 h-8" />
+                <div className="w-full h-full flex flex-col items-center justify-center bg-slate-100 text-slate-400">
+                  <User className="w-8 h-8 text-slate-300" />
+                  <span className="text-[8px] text-slate-400 font-medium">รอรูปถ่าย</span>
                 </div>
               )}
             </div>

@@ -14,6 +14,7 @@ import {
   Loader2,
   User,
   PlusCircle,
+  Printer,
 } from 'lucide-react';
 import Link from 'next/link';
 import { STATUS_LABELS } from '@/lib/thai-data';
@@ -59,7 +60,7 @@ export default function DirectoryPage() {
       if (selectedDistrict) params.append('district', selectedDistrict);
       if (selectedCategory) params.append('category', selectedCategory);
       if (selectedStatus) params.append('status', selectedStatus);
-      params.append('limit', '150');
+      params.append('limit', '1000');
 
       const res = await fetch(`/api/executives?${params.toString()}`);
       const data = await res.json();
@@ -181,6 +182,15 @@ export default function DirectoryPage() {
                 <List className="w-4 h-4" />
               </button>
             </div>
+
+            <Link
+              href="/report"
+              className="flex items-center space-x-1.5 px-3 py-2 bg-gradient-to-r from-indigo-700 to-blue-700 hover:from-indigo-800 hover:to-blue-800 text-white rounded-xl text-xs font-semibold shadow-sm transition-all"
+              title="จัดรายงานและพิมพ์เอกสารทางการแยกตามหน่วยงาน"
+            >
+              <Printer className="w-3.5 h-3.5" />
+              <span>พิมพ์รายงาน PDF</span>
+            </Link>
 
             <Link
               href="/admin/executives"

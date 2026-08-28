@@ -392,16 +392,71 @@ export default function ExecutiveFormModal({
             </div>
           </div>
 
-          {/* Photo Avatar URL */}
-          <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">URL รูปภาพประจำตัว (Portrait)</label>
-            <input
-              type="url"
-              value={formData.avatarUrl}
-              onChange={(e) => setFormData({ ...formData, avatarUrl: e.target.value })}
-              placeholder="https://..."
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs focus:ring-2 focus:ring-blue-500 focus:bg-white"
-            />
+          {/* Photo Avatar Upload & Preview */}
+          <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
+            <label className="block text-xs font-bold text-slate-800">รูปภาพประจำตัวผู้บริหาร (Executive Portrait)</label>
+            
+            <div className="flex items-start space-x-4">
+              {/* Preview Box */}
+              <div className="w-16 h-20 rounded-xl bg-white border-2 border-slate-300 overflow-hidden flex-shrink-0 flex items-center justify-center shadow-xs">
+                {formData.avatarUrl ? (
+                  <img
+                    src={formData.avatarUrl}
+                    alt="Preview"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <User className="w-8 h-8 text-slate-400" />
+                )}
+              </div>
+
+              {/* Upload Controls & URL Input */}
+              <div className="flex-1 space-y-2">
+                <div className="flex items-center space-x-2">
+                  <label className="cursor-pointer px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shadow-xs transition-colors inline-block">
+                    <span>📁 เลือกไฟล์รูปภาพ...</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={async (e) => {
+                        const f = e.target.files?.[0];
+                        if (!f) return;
+                        const data = new FormData();
+                        data.append('file', f);
+                        try {
+                          const res = await fetch('/api/upload', { method: 'POST', body: data });
+                          const resData = await res.json();
+                          if (resData.success && resData.url) {
+                            setFormData((prev) => ({ ...prev, avatarUrl: resData.url }));
+                          }
+                        } catch (err) {
+                          console.error('Failed to upload image', err);
+                        }
+                      }}
+                    />
+                  </label>
+
+                  {formData.avatarUrl && (
+                    <button
+                      type="button"
+                      onClick={() => setFormData((prev) => ({ ...prev, avatarUrl: '' }))}
+                      className="px-2.5 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg text-xs font-medium transition-colors"
+                    >
+                      ล้างรูป
+                    </button>
+                  )}
+                </div>
+
+                <input
+                  type="text"
+                  value={formData.avatarUrl}
+                  onChange={(e) => setFormData({ ...formData, avatarUrl: e.target.value })}
+                  placeholder="หรือใส่ที่อยู่ไฟล์ / URL รูปภาพ เช่น /avatars/... หรือ https://..."
+                  className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs focus:ring-2 focus:ring-blue-500 font-mono text-slate-800"
+                />
+              </div>
+            </div>
           </div>
 
           {/* Bio */}

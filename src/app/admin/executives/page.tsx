@@ -56,7 +56,7 @@ export default function AdminExecutivesPage() {
       if (level !== 'ALL') params.append('level', level);
       if (province) params.append('province', province);
       if (status) params.append('status', status);
-      params.append('limit', '200');
+      params.append('limit', '1000');
 
       const res = await fetch(`/api/executives?${params.toString()}`);
       const data = await res.json();
