@@ -9,6 +9,7 @@ import {
   Network,
   Settings,
   FileSpreadsheet,
+  Printer,
 } from 'lucide-react';
 
 export default function Navbar() {
@@ -17,6 +18,7 @@ export default function Navbar() {
   const navLinks = [
     { href: '/', label: 'ทำเนียบผู้บริหาร', icon: Users },
     { href: '/org-chart', label: 'แผนผังโครงสร้าง', icon: Network },
+    { href: '/print', label: 'พิมพ์ทำเนียบตามลำดับชั้น', icon: Printer },
     { href: '/admin', label: 'ระบบจัดการ (Admin)', icon: Settings },
   ];
 

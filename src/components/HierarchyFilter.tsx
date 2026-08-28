@@ -32,6 +32,7 @@ interface FilterProps {
   setSelectedStatus: (s: string) => void;
   onReset: () => void;
   totalResults: number;
+  onOpenPrint?: () => void;
 }
 
 export default function HierarchyFilter({
@@ -49,6 +50,7 @@ export default function HierarchyFilter({
   setSelectedStatus,
   onReset,
   totalResults,
+  onOpenPrint,
 }: FilterProps) {
   const isFiltered =
     searchQuery ||
@@ -65,7 +67,11 @@ export default function HierarchyFilter({
       : Object.values(CATEGORIES_BY_LEVEL).flat();
 
   const handlePrint = () => {
-    window.print();
+    if (onOpenPrint) {
+      onOpenPrint();
+    } else {
+      window.print();
+    }
   };
 
   const handleExportExcel = () => {

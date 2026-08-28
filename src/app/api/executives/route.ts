@@ -14,7 +14,9 @@ export async function GET(req: NextRequest) {
     const category = searchParams.get('category') || '';
     const organizationId = searchParams.get('organizationId') || '';
     const status = searchParams.get('status') || '';
-    const limit = parseInt(searchParams.get('limit') || '100', 10);
+    const all = searchParams.get('all') === 'true' || searchParams.get('limit') === 'all';
+    const limitParam = searchParams.get('limit');
+    const limit = all ? undefined : parseInt(limitParam || '200', 10);
     const offset = parseInt(searchParams.get('offset') || '0', 10);
 
     const where: any = {};

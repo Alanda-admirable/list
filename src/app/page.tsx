@@ -6,6 +6,7 @@ import StatSummary from '@/components/StatSummary';
 import HierarchyFilter from '@/components/HierarchyFilter';
 import ExecutiveCard, { Executive } from '@/components/ExecutiveCard';
 import ExecutiveModal from '@/components/ExecutiveModal';
+import PrintDirectoryModal from '@/components/PrintDirectoryModal';
 import Footer from '@/components/Footer';
 import {
   LayoutGrid,
@@ -14,6 +15,7 @@ import {
   Loader2,
   User,
   PlusCircle,
+  Printer,
 } from 'lucide-react';
 import Link from 'next/link';
 import { STATUS_LABELS } from '@/lib/thai-data';
@@ -23,6 +25,7 @@ export default function DirectoryPage() {
   const [executives, setExecutives] = useState<Executive[]>([]);
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
+  const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
 
   // Filters State
   const [searchQuery, setSearchQuery] = useState('');
@@ -59,7 +62,7 @@ export default function DirectoryPage() {
       if (selectedDistrict) params.append('district', selectedDistrict);
       if (selectedCategory) params.append('category', selectedCategory);
       if (selectedStatus) params.append('status', selectedStatus);
-      params.append('limit', '150');
+      params.append('all', 'true');
 
       const res = await fetch(`/api/executives?${params.toString()}`);
       const data = await res.json();
@@ -145,6 +148,7 @@ export default function DirectoryPage() {
           setSelectedStatus={setSelectedStatus}
           onReset={handleResetFilters}
           totalResults={executives.length}
+          onOpenPrint={() => setIsPrintModalOpen(true)}
         />
 
         {/* View Controls & Action Toolbar */}
@@ -157,6 +161,15 @@ export default function DirectoryPage() {
           </div>
 
           <div className="flex items-center space-x-2">
+            <button
+              onClick={() => setIsPrintModalOpen(true)}
+              className="flex items-center space-x-1.5 px-3.5 py-2 bg-gradient-to-r from-slate-900 to-blue-900 hover:from-slate-800 hover:to-blue-800 text-white rounded-xl text-xs font-semibold shadow-sm transition-all"
+              title="เปิดระบบพิมพ์ทำเนียบตามโครงสร้างลำดับชั้นและตำแหน่ง/ยศ"
+            >
+              <Printer className="w-3.5 h-3.5 text-amber-400" />
+              <span className="hidden sm:inline">พิมพ์ทำเนียบตามลำดับชั้น</span>
+            </button>
+
             <div className="flex items-center bg-white border border-slate-200 rounded-xl p-1 shadow-sm">
               <button
                 onClick={() => setViewMode('grid')}
@@ -343,6 +356,13 @@ export default function DirectoryPage() {
       <ExecutiveModal
         executive={selectedExecutive}
         onClose={() => setSelectedExecutive(null)}
+      />
+
+      {/* Official Print Modal */}
+      <PrintDirectoryModal
+        isOpen={isPrintModalOpen}
+        onClose={() => setIsPrintModalOpen(false)}
+        executives={executives}
       />
 
       <Footer />

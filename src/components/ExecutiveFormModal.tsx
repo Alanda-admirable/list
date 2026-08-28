@@ -392,16 +392,111 @@ export default function ExecutiveFormModal({
             </div>
           </div>
 
-          {/* Photo Avatar URL */}
-          <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">URL รูปภาพประจำตัว (Portrait)</label>
-            <input
-              type="url"
-              value={formData.avatarUrl}
-              onChange={(e) => setFormData({ ...formData, avatarUrl: e.target.value })}
-              placeholder="https://..."
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs focus:ring-2 focus:ring-blue-500 focus:bg-white"
-            />
+          {/* Photo Avatar Section with Presets & Upload */}
+          <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200/90 space-y-3">
+            <div className="flex items-center justify-between">
+              <label className="block text-xs font-bold text-slate-800">
+                รูปถ่ายทางการ (Official Portrait)
+              </label>
+              {formData.avatarUrl && (
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, avatarUrl: '' })}
+                  className="text-[11px] text-rose-600 hover:underline"
+                >
+                  ลบรูปถ่าย
+                </button>
+              )}
+            </div>
+
+            <div className="flex items-start space-x-4">
+              {/* Preview Thumbnail */}
+              <div className="w-16 h-20 sm:w-20 sm:h-24 rounded-lg overflow-hidden border-2 border-slate-300 bg-white flex-shrink-0 shadow-sm flex items-center justify-center">
+                {formData.avatarUrl ? (
+                  <img
+                    src={formData.avatarUrl}
+                    alt="Preview"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <User className="w-8 h-8 text-slate-300" />
+                )}
+              </div>
+
+              <div className="flex-1 space-y-2 text-xs">
+                {/* 1-Click Official Presets */}
+                <div>
+                  <span className="text-[11px] font-semibold text-slate-500 block mb-1">
+                    เลือกเครื่องแบบ/รูปมาตรฐานราชการ (คลิกเพื่อเลือกทันที):
+                  </span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {[
+                      { label: 'ผู้ว่าฯ (เต็มยศ)', url: '/avatars/governor.jpg' },
+                      { label: 'ข้าราชการชาย (ปกติขาว)', url: '/avatars/male_senior.jpg' },
+                      { label: 'ข้าราชการชาย ๒', url: '/avatars/male_mid.jpg' },
+                      { label: 'ข้าราชการหญิง (ปกติขาว)', url: '/avatars/female_senior.jpg' },
+                      { label: 'ข้าราชการหญิง ๒', url: '/avatars/female_mid.jpg' },
+                      { label: 'ตำรวจ (พ.ต.อ./พล.ต.ท.)', url: '/avatars/police_senior.jpg' },
+                      { label: 'ตำรวจ (ร.ต.อ.)', url: '/avatars/police_captain.jpg' },
+                      { label: 'ทหารบก (พ.อ./พล.ต.)', url: '/avatars/military_officer.jpg' },
+                      { label: 'ท้องถิ่นชาย (สูท)', url: '/avatars/male_suit.jpg' },
+                      { label: 'ท้องถิ่นหญิง (ผ้าไหม)', url: '/avatars/female_suit.jpg' },
+                    ].map((preset) => (
+                      <button
+                        key={preset.url}
+                        type="button"
+                        onClick={() => setFormData({ ...formData, avatarUrl: preset.url })}
+                        className={`px-2 py-1 rounded-md text-[10px] font-semibold border transition-all ${
+                          formData.avatarUrl === preset.url
+                            ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
+                            : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
+                        }`}
+                      >
+                        {preset.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Upload or Custom URL */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                  <div>
+                    <label className="text-[10px] font-semibold text-slate-500 block mb-0.5">
+                      อัปโหลดไฟล์รูปภาพ (จากเครื่อง):
+                    </label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                          if (typeof reader.result === 'string') {
+                            setFormData({ ...formData, avatarUrl: reader.result });
+                          }
+                        };
+                        reader.readAsDataURL(file);
+                      }}
+                      className="w-full text-[10px] text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-md file:border-0 file:text-[10px] file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-[10px] font-semibold text-slate-500 block mb-0.5">
+                      หรือระบุ URL รูปภาพ:
+                    </label>
+                    <input
+                      type="url"
+                      value={formData.avatarUrl}
+                      onChange={(e) => setFormData({ ...formData, avatarUrl: e.target.value })}
+                      placeholder="https://... หรือ /avatars/..."
+                      className="w-full px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg text-xs focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Bio */}
