@@ -431,22 +431,63 @@ async function main() {
   });
 
   if (rootProv) {
-    // Find district offices
-    const districtOffices = await prisma.organization.findMany({
-      where: {
-        level: 'DISTRICT',
-        category: 'อำเภอ'
-      }
-    });
+    // Ensure all 7 district offices exist
+    const districtDefinitions = [
+      { name: 'ที่ว่าการอำเภอเมืองปทุมธานี', district: 'เมืองปทุมธานี', phone: '0-2581-6130' },
+      { name: 'ที่ว่าการอำเภอคลองหลวง', district: 'คลองหลวง', phone: '0-2524-0581' },
+      { name: 'ที่ว่าการอำเภอธัญบุรี', district: 'ธัญบุรี', phone: '0-2577-6676' },
+      { name: 'ที่ว่าการอำเภอหนองเสือ', district: 'หนองเสือ', phone: '0-2549-1041' },
+      { name: 'ที่ว่าการอำเภอลาดหลุมแก้ว', district: 'ลาดหลุมแก้ว', phone: '0-2599-1272' },
+      { name: 'ที่ว่าการอำเภอลำลูกกา', district: 'ลำลูกกา', phone: '0-2569-1958' },
+      { name: 'ที่ว่าการอำเภอสามโคก', district: 'สามโคก', phone: '0-2593-1348' },
+    ];
 
     const districtMap = {};
-    for (const d of districtOffices) {
-      if (d.district) districtMap[d.district] = d.id;
-      // Link district office to province root
-      await prisma.organization.update({
-        where: { id: d.id },
-        data: { parentId: rootProv.id }
+
+    for (let idx = 0; idx < districtDefinitions.length; idx++) {
+      const def = districtDefinitions[idx];
+      let distOrg = await prisma.organization.findFirst({
+        where: { name: def.name }
       });
+
+      if (!distOrg) {
+        distOrg = await prisma.organization.create({
+          data: {
+            code: `ORG-PT-DIST-${idx + 1}`,
+            name: def.name,
+            level: 'DISTRICT',
+            category: 'อำเภอ',
+            province: 'ปทุมธานี',
+            district: def.district,
+            address: `ที่ว่าการอำเภอ${def.district} จังหวัดปทุมธานี`,
+            phone: def.phone,
+            parentId: rootProv.id,
+            orderIndex: 200 + idx
+          }
+        });
+
+        // Create default district chief executive if not exists
+        await prisma.executive.create({
+          data: {
+            prefix: 'นาย',
+            firstName: 'นายอำเภอ',
+            lastName: def.district,
+            position: `นายอำเภอ${def.district}`,
+            positionLevel: 'ผู้อำนวยการระดับสูง (ซี 9)',
+            organizationId: distOrg.id,
+            status: 'ACTIVE',
+            phone: def.phone,
+            orderIndex: 1
+          }
+        });
+      } else {
+        await prisma.organization.update({
+          where: { id: distOrg.id },
+          data: { parentId: rootProv.id, district: def.district }
+        });
+      }
+
+      districtMap[def.district] = distOrg.id;
     }
 
     // Link provincial departments, hospitals, police stations to province root

@@ -18,36 +18,38 @@ export async function GET(req: NextRequest) {
     if (category) where.category = category;
 
     if (tree) {
-      // Fetch hierarchical tree (top-level organizations with nested children and executives)
-      const topOrgs = await prisma.organization.findMany({
+      // Fetch all organizations and build full tree in memory for complete hierarchy
+      const allOrgs = await prisma.organization.findMany({
         where: {
-          parentId: null,
-          ...(level && level !== 'ALL' ? { level } : {}),
           ...(province ? { province } : {}),
         },
         include: {
           executives: {
             orderBy: { orderIndex: 'asc' },
           },
-          children: {
-            include: {
-              executives: {
-                orderBy: { orderIndex: 'asc' },
-              },
-              children: {
-                include: {
-                  executives: {
-                    orderBy: { orderIndex: 'asc' },
-                  },
-                },
-              },
-            },
-          },
         },
-        orderBy: [{ orderIndex: 'asc' }, { name: 'asc' }],
+        orderBy: [{ level: 'asc' }, { orderIndex: 'asc' }, { name: 'asc' }],
       });
 
-      return NextResponse.json({ success: true, data: topOrgs });
+      // Build Map
+      const orgMap: Record<string, any> = {};
+      allOrgs.forEach((org) => {
+        orgMap[org.id] = { ...org, children: [] };
+      });
+
+      const rootNodes: any[] = [];
+      allOrgs.forEach((org) => {
+        if (org.parentId && orgMap[org.parentId]) {
+          orgMap[org.parentId].children.push(orgMap[org.id]);
+        } else {
+          // If top level or parent not in current province filter
+          if (!level || level === 'ALL' || org.level === level) {
+            rootNodes.push(orgMap[org.id]);
+          }
+        }
+      });
+
+      return NextResponse.json({ success: true, data: rootNodes });
     }
 
     const organizations = await prisma.organization.findMany({

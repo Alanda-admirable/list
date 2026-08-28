@@ -7,11 +7,13 @@ import {
   Building,
   User,
   MapPin,
+  ChevronsDown,
+  ChevronsUp,
 } from 'lucide-react';
 import { Executive } from './ExecutiveCard';
 import { STATUS_LABELS } from '@/lib/thai-data';
 
-interface OrgNode {
+export interface OrgNode {
   id: string;
   name: string;
   nameEn?: string | null;
@@ -33,12 +35,14 @@ function TreeNode({
   node,
   onSelectExecutive,
   level = 0,
+  defaultExpanded = true,
 }: {
   node: OrgNode;
   onSelectExecutive: (executive: Executive) => void;
   level?: number;
+  defaultExpanded?: boolean;
 }) {
-  const [expanded, setExpanded] = useState(true);
+  const [expanded, setExpanded] = useState(defaultExpanded);
   const hasChildren = node.children && node.children.length > 0;
 
   const levelColor = {
@@ -67,7 +71,7 @@ function TreeNode({
             {hasChildren && (
               <button
                 onClick={() => setExpanded(!expanded)}
-                className="p-1 rounded-lg hover:bg-slate-200/70 text-slate-600 transition-colors"
+                className="p-1.5 rounded-lg hover:bg-slate-200/70 text-slate-600 transition-colors"
                 title={expanded ? 'ย่อกิ่งสาขา' : 'ขยายกิ่งสาขา'}
               >
                 {expanded ? (
@@ -79,7 +83,7 @@ function TreeNode({
             )}
 
             {!hasChildren && (
-              <div className="p-1 text-slate-400">
+              <div className="p-1.5 text-slate-400">
                 <Building className="w-4 h-4" />
               </div>
             )}
@@ -170,6 +174,7 @@ function TreeNode({
               node={child}
               onSelectExecutive={onSelectExecutive}
               level={level + 1}
+              defaultExpanded={defaultExpanded}
             />
           ))}
         </div>
@@ -179,6 +184,9 @@ function TreeNode({
 }
 
 export default function OrgChartTree({ nodes, onSelectExecutive }: TreeProps) {
+  const [expandAllKey, setExpandAllKey] = useState<number>(0);
+  const [isAllExpanded, setIsAllExpanded] = useState<boolean>(true);
+
   if (!nodes || nodes.length === 0) {
     return (
       <div className="text-center py-12 bg-white rounded-2xl border border-slate-200 text-slate-500">
@@ -188,15 +196,41 @@ export default function OrgChartTree({ nodes, onSelectExecutive }: TreeProps) {
     );
   }
 
+  const toggleAll = (expand: boolean) => {
+    setIsAllExpanded(expand);
+    setExpandAllKey((prev) => prev + 1);
+  };
+
   return (
     <div className="space-y-4">
-      {nodes.map((rootNode) => (
-        <TreeNode
-          key={rootNode.id}
-          node={rootNode}
-          onSelectExecutive={onSelectExecutive}
-        />
-      ))}
+      <div className="flex items-center justify-end space-x-2 pb-2">
+        <button
+          onClick={() => toggleAll(true)}
+          className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors"
+        >
+          <ChevronsDown className="w-3.5 h-3.5" />
+          <span>ขยายทุกสายงาน</span>
+        </button>
+
+        <button
+          onClick={() => toggleAll(false)}
+          className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors"
+        >
+          <ChevronsUp className="w-3.5 h-3.5" />
+          <span>ยุบทุกสายงาน</span>
+        </button>
+      </div>
+
+      <div key={expandAllKey} className="space-y-4">
+        {nodes.map((rootNode) => (
+          <TreeNode
+            key={rootNode.id}
+            node={rootNode}
+            onSelectExecutive={onSelectExecutive}
+            defaultExpanded={isAllExpanded}
+          />
+        ))}
+      </div>
     </div>
   );
 }
