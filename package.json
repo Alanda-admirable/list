@@ -8,6 +8,7 @@
     "build:next": "prisma generate && next build",
     "postinstall": "prisma generate",
     "deploy": "opennextjs-cloudflare build && wrangler deploy",
+    "d1:seed": "wrangler d1 execute list-db --file=./prisma/seed.sql",
     "start": "next start",
     "lint": "next lint",
     "seed": "node prisma/seed-pathum.js"
