@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { INITIAL_HISTORIES, INITIAL_AUDIT_LOGS, INITIAL_EXECUTIVES } from '@/lib/database-store';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -7,28 +7,21 @@ export const revalidate = 0;
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    const type = searchParams.get('type') || 'audit'; // 'audit' or 'transfers'
+    const type = searchParams.get('type') || 'audit';
     const limit = parseInt(searchParams.get('limit') || '50', 10);
 
     if (type === 'transfers') {
-      const histories = await prisma.positionHistory.findMany({
-        include: {
-          executive: {
-            include: { organization: true },
-          },
-        },
-        orderBy: { effectiveDate: 'desc' },
-        take: limit,
+      const enrichedHistories = INITIAL_HISTORIES.slice(0, limit).map((h) => {
+        const executive = INITIAL_EXECUTIVES.find((e) => e.id === h.executiveId);
+        return {
+          ...h,
+          executive,
+        };
       });
-
-      return NextResponse.json({ success: true, data: histories });
+      return NextResponse.json({ success: true, data: enrichedHistories });
     }
 
-    const logs = await prisma.auditLog.findMany({
-      orderBy: { timestamp: 'desc' },
-      take: limit,
-    });
-
+    const logs = INITIAL_AUDIT_LOGS.slice(0, limit);
     return NextResponse.json({ success: true, data: logs });
   } catch (error: any) {
     return NextResponse.json(

@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import { getOrganizations, getExecutives } from '@/lib/data-service';
+import { getOrganizations, getExecutives, createOrganizationRecord } from '@/lib/data-service';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -68,22 +67,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const {
-      name,
-      nameEn,
-      code,
-      level,
-      category,
-      ministry,
-      province,
-      district,
-      parentId,
-      address,
-      phone,
-      email,
-      website,
-      orderIndex = 0,
-    } = body;
+    const { name, level, category } = body;
 
     if (!name || !level || !category) {
       return NextResponse.json(
@@ -92,35 +76,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const newOrg = await prisma.organization.create({
-      data: {
-        name,
-        nameEn,
-        code: code || `ORG-${Date.now()}`,
-        level,
-        category,
-        ministry,
-        province,
-        district,
-        parentId: parentId || null,
-        address,
-        phone,
-        email,
-        website,
-        orderIndex: Number(orderIndex) || 0,
-      },
-    });
-
-    await prisma.auditLog.create({
-      data: {
-        action: 'CREATE',
-        entityType: 'ORGANIZATION',
-        entityId: newOrg.id,
-        title: `เพิ่มหน่วยงาน: ${newOrg.name} (${newOrg.category})`,
-        details: JSON.stringify(newOrg),
-        performedBy: 'ผู้ดูแลระบบ',
-      },
-    });
+    const newOrg = await createOrganizationRecord(body);
 
     return NextResponse.json({
       success: true,
