@@ -6,6 +6,8 @@
     "dev": "next dev",
     "build": "prisma generate && next build",
     "postinstall": "prisma generate",
+    "build:worker": "opennextjs-cloudflare build --dangerouslyUseUnsupportedNextVersion",
+    "deploy": "opennextjs-cloudflare build --dangerouslyUseUnsupportedNextVersion && wrangler deploy",
     "start": "next start",
     "lint": "next lint",
     "seed": "node prisma/seed-pathum.js"

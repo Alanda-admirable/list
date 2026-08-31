@@ -3,11 +3,12 @@ import { prisma } from '@/lib/prisma';
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> | { id: string } }
 ) {
   try {
+    const { id } = await Promise.resolve(params);
     const executive = await prisma.executive.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         organization: true,
         histories: {
@@ -34,12 +35,13 @@ export async function GET(
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> | { id: string } }
 ) {
   try {
+    const { id } = await Promise.resolve(params);
     const body = await req.json();
     const existing = await prisma.executive.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: { organization: true },
     });
 
@@ -80,7 +82,7 @@ export async function PUT(
       (organizationId && organizationId !== existing.organizationId);
 
     const updated = await prisma.executive.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         prefix: prefix ?? existing.prefix,
         firstName: firstName ?? existing.firstName,
@@ -150,11 +152,12 @@ export async function PUT(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> | { id: string } }
 ) {
   try {
+    const { id } = await Promise.resolve(params);
     const existing = await prisma.executive.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: { organization: true },
     });
 
@@ -166,14 +169,14 @@ export async function DELETE(
     }
 
     await prisma.executive.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     await prisma.auditLog.create({
       data: {
         action: 'DELETE',
         entityType: 'EXECUTIVE',
-        entityId: params.id,
+        entityId: id,
         title: `ลบข้อมูลผู้บริหาร: ${existing.prefix}${existing.firstName} ${existing.lastName} (${existing.position})`,
         details: JSON.stringify(existing),
         performedBy: 'ผู้ดูแลระบบ',

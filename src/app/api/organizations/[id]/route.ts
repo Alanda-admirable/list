@@ -3,11 +3,12 @@ import { prisma } from '@/lib/prisma';
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> | { id: string } }
 ) {
   try {
+    const { id } = await Promise.resolve(params);
     const org = await prisma.organization.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         parent: true,
         children: true,
@@ -35,12 +36,13 @@ export async function GET(
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> | { id: string } }
 ) {
   try {
+    const { id } = await Promise.resolve(params);
     const body = await req.json();
     const existing = await prisma.organization.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!existing) {
@@ -68,7 +70,7 @@ export async function PUT(
     } = body;
 
     const updated = await prisma.organization.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         name: name ?? existing.name,
         nameEn: nameEn ?? existing.nameEn,
@@ -113,11 +115,12 @@ export async function PUT(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> | { id: string } }
 ) {
   try {
+    const { id } = await Promise.resolve(params);
     const existing = await prisma.organization.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: { _count: { select: { executives: true, children: true } } },
     });
 
@@ -139,14 +142,14 @@ export async function DELETE(
     }
 
     await prisma.organization.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     await prisma.auditLog.create({
       data: {
         action: 'DELETE',
         entityType: 'ORGANIZATION',
-        entityId: params.id,
+        entityId: id,
         title: `ลบหน่วยงาน: ${existing.name}`,
         performedBy: 'ผู้ดูแลระบบ',
       },
