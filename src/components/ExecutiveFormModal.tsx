@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   X,
   User,
@@ -9,6 +9,9 @@ import {
   Trash2,
   ArrowRightLeft,
   AlertTriangle,
+  Search,
+  ChevronDown,
+  Check,
 } from 'lucide-react';
 import { Executive } from './ExecutiveCard';
 import { PREFIXES } from '@/lib/thai-data';
@@ -16,7 +19,7 @@ import { PREFIXES } from '@/lib/thai-data';
 interface FormModalProps {
   isOpen: boolean;
   executive: Executive | null; // If null, create mode
-  organizations: Array<{ id: string; name: string; level: string; category: string; province?: string | null }>;
+  organizations: Array<{ id: string; name: string; level: string; category: string; province?: string | null; district?: string | null }>;
   onClose: () => void;
   onSaved: () => void;
 }
@@ -24,11 +27,16 @@ interface FormModalProps {
 export default function ExecutiveFormModal({
   isOpen,
   executive,
-  organizations,
+  organizations = [],
   onClose,
   onSaved,
 }: FormModalProps) {
   const isEdit = !!executive;
+
+  const [orgList, setOrgList] = useState<any[]>(organizations);
+  const [orgSearch, setOrgSearch] = useState('');
+  const [isOrgDropdownOpen, setIsOrgDropdownOpen] = useState(false);
+  const orgDropdownRef = useRef<HTMLDivElement>(null);
 
   const [formData, setFormData] = useState({
     prefix: 'นาย',
@@ -54,6 +62,35 @@ export default function ExecutiveFormModal({
   const [error, setError] = useState('');
   const [deleteConfirm, setDeleteConfirm] = useState(false);
 
+  // Auto-fetch organizations if not provided or empty
+  useEffect(() => {
+    if (isOpen) {
+      if (organizations && organizations.length > 0) {
+        setOrgList(organizations);
+      } else {
+        fetch('/api/organizations?limit=1000')
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.success && Array.isArray(data.data)) {
+              setOrgList(data.data);
+            }
+          })
+          .catch((err) => console.error('Failed to load organizations in modal', err));
+      }
+    }
+  }, [organizations, isOpen]);
+
+  // Close dropdown on click outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (orgDropdownRef.current && !orgDropdownRef.current.contains(e.target as Node)) {
+        setIsOrgDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   useEffect(() => {
     if (executive) {
       setFormData({
@@ -62,7 +99,7 @@ export default function ExecutiveFormModal({
         lastName: executive.lastName || '',
         position: executive.position || '',
         positionLevel: executive.positionLevel || 'นักบริหารระดับสูง',
-        organizationId: executive.organizationId || (organizations[0]?.id || ''),
+        organizationId: executive.organizationId || (orgList[0]?.id || ''),
         status: executive.status || 'ACTIVE',
         appointmentDate: executive.appointmentDate
           ? new Date(executive.appointmentDate).toISOString().split('T')[0]
@@ -79,6 +116,7 @@ export default function ExecutiveFormModal({
         isTransfer: false,
         transferNotes: '',
       });
+      setOrgSearch(executive.organization?.name || '');
     } else {
       setFormData({
         prefix: 'นาย',
@@ -86,7 +124,7 @@ export default function ExecutiveFormModal({
         lastName: '',
         position: '',
         positionLevel: 'นักบริหารระดับสูง',
-        organizationId: organizations[0]?.id || '',
+        organizationId: orgList[0]?.id || '',
         status: 'ACTIVE',
         appointmentDate: new Date().toISOString().split('T')[0],
         endDate: '',
@@ -99,12 +137,36 @@ export default function ExecutiveFormModal({
         isTransfer: false,
         transferNotes: '',
       });
+      setOrgSearch('');
     }
     setError('');
     setDeleteConfirm(false);
-  }, [executive, organizations, isOpen]);
+    setIsOrgDropdownOpen(false);
+  }, [executive, orgList.length, isOpen]);
 
   if (!isOpen) return null;
+
+  // Selected organization object
+  const selectedOrg = orgList.find((o) => o.id === formData.organizationId);
+
+  // Filter organizations based on search query
+  const filteredOrgs = orgList.filter((org) => {
+    if (!orgSearch) return true;
+    const q = orgSearch.toLowerCase().trim();
+    return (
+      org.name.toLowerCase().includes(q) ||
+      (org.category && org.category.toLowerCase().includes(q)) ||
+      (org.province && org.province.toLowerCase().includes(q)) ||
+      (org.district && org.district.toLowerCase().includes(q)) ||
+      (org.level && org.level.toLowerCase().includes(q))
+    );
+  });
+
+  const handleSelectOrg = (org: any) => {
+    setFormData((prev) => ({ ...prev, organizationId: org.id }));
+    setOrgSearch(org.name);
+    setIsOrgDropdownOpen(false);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -230,25 +292,159 @@ export default function ExecutiveFormModal({
             </div>
           )}
 
-          {/* Organization & Level Selection */}
-          <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1.5 flex items-center">
-              <Building className="w-3.5 h-3.5 mr-1 text-blue-600" />
-              สังกัดหน่วยงาน *
-            </label>
-            <select
-              value={formData.organizationId}
-              onChange={(e) => setFormData({ ...formData, organizationId: e.target.value })}
-              required
-              className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-blue-500 focus:bg-white text-slate-900"
-            >
-              <option value="">-- เลือกหน่วยงานที่สังกัด --</option>
-              {organizations.map((org) => (
-                <option key={org.id} value={org.id}>
-                  [{org.level === 'CENTRAL' ? 'ส่วนกลาง' : org.level === 'PROVINCIAL' ? 'ภูมิภาค' : org.level === 'DISTRICT' ? 'อำเภอ' : 'ท้องถิ่น'}] {org.name} {org.province ? `(${org.province})` : ''}
-                </option>
-              ))}
-            </select>
+          {/* Organization & Level Selection with Search Autocomplete */}
+          <div className="space-y-1.5" ref={orgDropdownRef}>
+            <div className="flex items-center justify-between">
+              <label className="block text-xs font-bold text-slate-700 flex items-center">
+                <Building className="w-3.5 h-3.5 mr-1 text-blue-600" />
+                สังกัดหน่วยงาน *
+              </label>
+              <span className="text-[11px] text-slate-400 font-medium">
+                (มีให้เลือก {orgList.length} หน่วยงาน)
+              </span>
+            </div>
+
+            <div className="relative">
+              {/* Search / Select Input */}
+              <div className="relative flex items-center">
+                <Search className="w-4 h-4 absolute left-3 text-slate-400 pointer-events-none" />
+                <input
+                  type="text"
+                  value={orgSearch}
+                  onChange={(e) => {
+                    setOrgSearch(e.target.value);
+                    setIsOrgDropdownOpen(true);
+                  }}
+                  onFocus={() => setIsOrgDropdownOpen(true)}
+                  placeholder="พิมพ์ค้นหาชื่อหน่วยงาน (เช่น อบจ., เทศบาล, อำเภอ, ปทุมธานี)..."
+                  className="w-full pl-9 pr-20 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-blue-500 focus:bg-white text-slate-900 font-medium"
+                />
+                
+                <div className="absolute right-2 flex items-center space-x-1">
+                  {orgSearch && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setOrgSearch('');
+                        setFormData((prev) => ({ ...prev, organizationId: '' }));
+                        setIsOrgDropdownOpen(true);
+                      }}
+                      className="p-1 text-slate-400 hover:text-slate-600 rounded-md text-[10px]"
+                      title="ล้างคำค้นหา"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => setIsOrgDropdownOpen(!isOrgDropdownOpen)}
+                    className="p-1.5 text-slate-500 hover:text-blue-600 rounded-lg hover:bg-slate-100 transition-colors"
+                  >
+                    <ChevronDown className={`w-4 h-4 transition-transform ${isOrgDropdownOpen ? 'rotate-180' : ''}`} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Hidden input for HTML form validation */}
+              <input
+                type="hidden"
+                value={formData.organizationId}
+                required
+              />
+
+              {/* Selected Organization Summary Pill */}
+              {selectedOrg && (
+                <div className="mt-1.5 px-3 py-1.5 rounded-xl bg-blue-50/80 border border-blue-200 flex items-center justify-between text-xs">
+                  <div className="flex items-center space-x-2 truncate">
+                    <span className="w-2 h-2 rounded-full bg-blue-600 flex-shrink-0" />
+                    <span className="font-semibold text-blue-900 truncate">
+                      {selectedOrg.name}
+                    </span>
+                    <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-white text-blue-700 border border-blue-200 flex-shrink-0">
+                      {selectedOrg.level === 'CENTRAL'
+                        ? 'ส่วนกลาง'
+                        : selectedOrg.level === 'PROVINCIAL'
+                        ? 'ส่วนภูมิภาค'
+                        : selectedOrg.level === 'DISTRICT'
+                        ? 'ระดับอำเภอ'
+                        : 'ท้องถิ่น (อปท.)'}
+                    </span>
+                    {selectedOrg.province && (
+                      <span className="text-[11px] text-slate-500 flex-shrink-0">
+                        จ.{selectedOrg.province}
+                      </span>
+                    )}
+                  </div>
+                  <span className="text-[10px] text-blue-600 font-bold flex-shrink-0 ml-2">
+                    ✓ เลือกแล้ว
+                  </span>
+                </div>
+              )}
+
+              {/* Dropdown Options Popup */}
+              {isOrgDropdownOpen && (
+                <div className="absolute z-50 left-0 right-0 top-full mt-1.5 bg-white rounded-2xl shadow-xl border border-slate-200 max-h-60 overflow-y-auto divide-y divide-slate-100 animate-in fade-in slide-in-from-top-1 duration-150">
+                  {filteredOrgs.length === 0 ? (
+                    <div className="p-4 text-center text-slate-400 text-xs">
+                      ไม่พบหน่วยงานที่ตรงกับ &quot;{orgSearch}&quot;
+                    </div>
+                  ) : (
+                    filteredOrgs.map((org) => {
+                      const isSelected = org.id === formData.organizationId;
+                      return (
+                        <button
+                          key={org.id}
+                          type="button"
+                          onClick={() => handleSelectOrg(org)}
+                          className={`w-full text-left p-3 hover:bg-blue-50/70 transition-colors flex items-center justify-between group ${
+                            isSelected ? 'bg-blue-50 font-semibold' : ''
+                          }`}
+                        >
+                          <div className="flex-1 min-w-0 pr-2">
+                            <div className="flex items-center space-x-1.5 mb-0.5">
+                              <span
+                                className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${
+                                  org.level === 'CENTRAL'
+                                    ? 'bg-purple-100 text-purple-800'
+                                    : org.level === 'PROVINCIAL'
+                                    ? 'bg-blue-100 text-blue-800'
+                                    : org.level === 'DISTRICT'
+                                    ? 'bg-amber-100 text-amber-800'
+                                    : 'bg-emerald-100 text-emerald-800'
+                                }`}
+                              >
+                                {org.level === 'CENTRAL'
+                                  ? 'ส่วนกลาง'
+                                  : org.level === 'PROVINCIAL'
+                                  ? 'ส่วนภูมิภาค'
+                                  : org.level === 'DISTRICT'
+                                  ? 'อำเภอ'
+                                  : 'อปท.'}
+                              </span>
+                              <span className="text-[10px] text-slate-500 font-medium truncate">
+                                {org.category || 'หน่วยงาน'}
+                              </span>
+                              {org.province && (
+                                <span className="text-[10px] text-slate-400">
+                                  {org.district ? `อ.${org.district} ` : ''}จ.{org.province}
+                                </span>
+                              )}
+                            </div>
+                            <div className="text-xs text-slate-800 group-hover:text-blue-900 font-medium truncate">
+                              {org.name}
+                            </div>
+                          </div>
+
+                          {isSelected && (
+                            <Check className="w-4 h-4 text-blue-600 flex-shrink-0" />
+                          )}
+                        </button>
+                      );
+                    })
+                  )}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Personal Info Grid */}
