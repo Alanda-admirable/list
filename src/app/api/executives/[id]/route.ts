@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { getExecutiveById } from '@/lib/data-service';
 
 export async function GET(
   req: NextRequest,
@@ -7,15 +8,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const executive = await prisma.executive.findUnique({
-      where: { id },
-      include: {
-        organization: true,
-        histories: {
-          orderBy: { effectiveDate: 'desc' },
-        },
-      },
-    });
+    const executive = await getExecutiveById(id);
 
     if (!executive) {
       return NextResponse.json(

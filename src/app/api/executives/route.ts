@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { getExecutives } from '@/lib/data-service';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -17,69 +18,22 @@ export async function GET(req: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '1000', 10);
     const offset = parseInt(searchParams.get('offset') || '0', 10);
 
-    const where: any = {};
-
-    if (level && level !== 'ALL') {
-      where.organization = { ...where.organization, level };
-    }
-
-    if (province) {
-      where.organization = { ...where.organization, province };
-    }
-
-    if (district) {
-      where.organization = { ...where.organization, district };
-    }
-
-    if (category) {
-      where.organization = { ...where.organization, category };
-    }
-
-    if (organizationId) {
-      where.organizationId = organizationId;
-    }
-
-    if (status) {
-      where.status = status;
-    }
-
-    if (query) {
-      const q = query.trim();
-      where.OR = [
-        { firstName: { contains: q } },
-        { lastName: { contains: q } },
-        { position: { contains: q } },
-        { positionLevel: { contains: q } },
-        { organization: { name: { contains: q } } },
-        { organization: { province: { contains: q } } },
-        { organization: { district: { contains: q } } },
-      ];
-    }
-
-    const [total, executives] = await Promise.all([
-      prisma.executive.count({ where }),
-      prisma.executive.findMany({
-        where,
-        include: {
-          organization: true,
-          histories: {
-            orderBy: { effectiveDate: 'desc' },
-            take: 5,
-          },
-        },
-        orderBy: [
-          { orderIndex: 'asc' },
-          { createdAt: 'desc' },
-        ],
-        take: limit,
-        skip: offset,
-      }),
-    ]);
+    const result = await getExecutives({
+      query,
+      level,
+      province,
+      district,
+      category,
+      organizationId,
+      status,
+      limit,
+      offset,
+    });
 
     return NextResponse.json({
       success: true,
-      total,
-      data: executives,
+      total: result.total,
+      data: result.data,
     });
   } catch (error: any) {
     console.error('Error fetching executives:', error);
