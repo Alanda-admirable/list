@@ -17,6 +17,7 @@ import {
   ArrowLeft,
 } from 'lucide-react';
 import Link from 'next/link';
+import { mergeWithLocalData, saveExecutiveUpdateLocally } from '@/lib/client-sync';
 
 interface ExecutiveItem {
   id: string;
@@ -59,10 +60,11 @@ export default function PhotoMatcherPage() {
   const fetchExecutives = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/executives?limit=1000');
+      const res = await fetch(`/api/executives?limit=1000&_t=${Date.now()}`, { cache: 'no-store' });
       const data = await res.json();
-      if (data.success) {
-        setExecutives(data.data);
+      if (data.success && Array.isArray(data.data)) {
+        const merged = mergeWithLocalData(data.data);
+        setExecutives(merged as any);
       }
     } catch (e) {
       console.error('Failed to load executives', e);
@@ -70,6 +72,14 @@ export default function PhotoMatcherPage() {
       setLoading(false);
     }
   }, []);
+
+  useEffect(() => {
+    const handleDataChanged = () => {
+      fetchExecutives();
+    };
+    window.addEventListener('thaigov_data_changed', handleDataChanged);
+    return () => window.removeEventListener('thaigov_data_changed', handleDataChanged);
+  }, [fetchExecutives]);
 
   useEffect(() => {
     fetchExecutives();
@@ -132,6 +142,7 @@ export default function PhotoMatcherPage() {
         setExecutives((prev) =>
           prev.map((ex) => (ex.id === executiveId ? { ...ex, avatarUrl: data.avatarUrl } : ex))
         );
+        saveExecutiveUpdateLocally(executiveId, { avatarUrl: data.avatarUrl, photoVerified: true });
         setUrlInputs((prev) => ({ ...prev, [executiveId]: '' }));
         setFeedback({ id: executiveId, msg: 'บันทึกรูปถ่ายจริงสำเร็จ!', type: 'success' });
       } else {
@@ -164,6 +175,7 @@ export default function PhotoMatcherPage() {
         setExecutives((prev) =>
           prev.map((ex) => (ex.id === executiveId ? { ...ex, avatarUrl: data.url } : ex))
         );
+        saveExecutiveUpdateLocally(executiveId, { avatarUrl: data.url, photoVerified: true });
         setFeedback({ id: executiveId, msg: 'อัปโหลดรูปถ่ายจริงสำเร็จ!', type: 'success' });
       } else {
         setFeedback({ id: executiveId, msg: data.error || 'อัปโหลดไม่สำเร็จ', type: 'error' });
@@ -189,6 +201,7 @@ export default function PhotoMatcherPage() {
         setExecutives((prev) =>
           prev.map((ex) => (ex.id === executiveId ? { ...ex, avatarUrl: null } : ex))
         );
+        saveExecutiveUpdateLocally(executiveId, { avatarUrl: null, photoVerified: false });
       }
     } catch (err) {
       console.error('Failed to remove photo', err);

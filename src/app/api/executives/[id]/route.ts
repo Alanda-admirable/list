@@ -5,6 +5,9 @@ import {
   deleteExecutiveRecord,
 } from '@/lib/data-service';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -20,7 +23,16 @@ export async function GET(
       );
     }
 
-    return NextResponse.json({ success: true, data: executive });
+    return NextResponse.json(
+      { success: true, data: executive },
+      {
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
+          'Pragma': 'no-cache',
+          'Expires': '0',
+        },
+      }
+    );
   } catch (error: any) {
     return NextResponse.json(
       { success: false, error: error.message || 'Internal Server Error' },
@@ -45,11 +57,20 @@ export async function PUT(
       );
     }
 
-    return NextResponse.json({
-      success: true,
-      data: updated,
-      message: 'อัปเดตข้อมูลผู้บริหารเรียบร้อยแล้ว',
-    });
+    return NextResponse.json(
+      {
+        success: true,
+        data: updated,
+        message: 'อัปเดตข้อมูลผู้บริหารเรียบร้อยแล้ว',
+      },
+      {
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
+          'Pragma': 'no-cache',
+          'Expires': '0',
+        },
+      }
+    );
   } catch (error: any) {
     console.error('Error updating executive:', error);
     return NextResponse.json(

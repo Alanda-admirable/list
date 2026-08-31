@@ -41,6 +41,8 @@ export interface Executive {
   phone?: string | null;
   email?: string | null;
   avatarUrl?: string | null;
+  photoVerified?: boolean;
+  photoSource?: string | null;
   bio?: string | null;
   orderIndex: number;
   updatedAt?: string;

@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { STATUS_LABELS } from '@/lib/thai-data';
+import { mergeWithLocalData } from '@/lib/client-sync';
 
 export default function DirectoryPage() {
   const [stats, setStats] = useState<any>(null);
@@ -39,7 +40,7 @@ export default function DirectoryPage() {
   // Fetch Stats
   const fetchStats = async () => {
     try {
-      const res = await fetch('/api/stats');
+      const res = await fetch(`/api/stats?_t=${Date.now()}`, { cache: 'no-store' });
       const data = await res.json();
       if (data.success) {
         setStats(data.data);
@@ -61,11 +62,13 @@ export default function DirectoryPage() {
       if (selectedCategory) params.append('category', selectedCategory);
       if (selectedStatus) params.append('status', selectedStatus);
       params.append('limit', '1000');
+      params.append('_t', Date.now().toString());
 
-      const res = await fetch(`/api/executives?${params.toString()}`);
+      const res = await fetch(`/api/executives?${params.toString()}`, { cache: 'no-store' });
       const data = await res.json();
-      if (data.success) {
-        setExecutives(data.data);
+      if (data.success && Array.isArray(data.data)) {
+        const merged = mergeWithLocalData(data.data);
+        setExecutives(merged);
       }
     } catch (e) {
       console.error('Failed to load executives', e);
@@ -84,6 +87,16 @@ export default function DirectoryPage() {
   useEffect(() => {
     fetchStats();
   }, []);
+
+  useEffect(() => {
+    const handleDataChanged = () => {
+      fetchExecutives();
+      fetchStats();
+    };
+
+    window.addEventListener('thaigov_data_changed', handleDataChanged);
+    return () => window.removeEventListener('thaigov_data_changed', handleDataChanged);
+  }, [fetchExecutives]);
 
   useEffect(() => {
     const timer = setTimeout(() => {

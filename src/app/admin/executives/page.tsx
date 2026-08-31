@@ -7,6 +7,7 @@ import ExecutiveFormModal from '@/components/ExecutiveFormModal';
 import ExecutiveModal from '@/components/ExecutiveModal';
 import { Executive } from '@/components/ExecutiveCard';
 import { STATUS_LABELS, ALL_PROVINCES, ORG_LEVELS } from '@/lib/thai-data';
+import { mergeWithLocalData } from '@/lib/client-sync';
 import {
   Users,
   PlusCircle,
@@ -37,7 +38,7 @@ export default function AdminExecutivesPage() {
   // Fetch Organizations
   const fetchOrgs = async () => {
     try {
-      const res = await fetch('/api/organizations');
+      const res = await fetch(`/api/organizations?_t=${Date.now()}`, { cache: 'no-store' });
       const data = await res.json();
       if (data.success) {
         setOrganizations(data.data);
@@ -57,11 +58,13 @@ export default function AdminExecutivesPage() {
       if (province) params.append('province', province);
       if (status) params.append('status', status);
       params.append('limit', '1000');
+      params.append('_t', Date.now().toString());
 
-      const res = await fetch(`/api/executives?${params.toString()}`);
+      const res = await fetch(`/api/executives?${params.toString()}`, { cache: 'no-store' });
       const data = await res.json();
-      if (data.success) {
-        setExecutives(data.data);
+      if (data.success && Array.isArray(data.data)) {
+        const merged = mergeWithLocalData(data.data);
+        setExecutives(merged);
       }
     } catch (e) {
       console.error('Failed to load executives', e);
@@ -73,6 +76,15 @@ export default function AdminExecutivesPage() {
   useEffect(() => {
     fetchOrgs();
   }, []);
+
+  useEffect(() => {
+    const handleDataChanged = () => {
+      fetchExecutives();
+    };
+
+    window.addEventListener('thaigov_data_changed', handleDataChanged);
+    return () => window.removeEventListener('thaigov_data_changed', handleDataChanged);
+  }, [fetchExecutives]);
 
   useEffect(() => {
     const timer = setTimeout(() => {

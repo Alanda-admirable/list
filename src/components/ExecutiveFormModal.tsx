@@ -19,6 +19,11 @@ import {
 } from 'lucide-react';
 import { Executive } from './ExecutiveCard';
 import { PREFIXES } from '@/lib/thai-data';
+import {
+  saveExecutiveUpdateLocally,
+  saveExecutiveCreateLocally,
+  saveExecutiveDeleteLocally,
+} from '@/lib/client-sync';
 
 interface FormModalProps {
   isOpen: boolean;
@@ -229,6 +234,19 @@ export default function ExecutiveFormModal({
         throw new Error(data.error || 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
       }
 
+      if (isEdit && executive) {
+        saveExecutiveUpdateLocally(executive.id, {
+          ...formData,
+          organization: selectedOrg || executive.organization,
+        });
+      } else if (data.data) {
+        saveExecutiveCreateLocally({
+          ...data.data,
+          ...formData,
+          organization: selectedOrg,
+        });
+      }
+
       onSaved();
       onClose();
     } catch (err: any) {
@@ -251,6 +269,8 @@ export default function ExecutiveFormModal({
       if (!data.success) {
         throw new Error(data.error || 'เกิดข้อผิดพลาดในการลบข้อมูล');
       }
+
+      saveExecutiveDeleteLocally(executive.id);
 
       onSaved();
       onClose();

@@ -29,11 +29,20 @@ export async function GET(req: NextRequest) {
       offset,
     });
 
-    return NextResponse.json({
-      success: true,
-      total: result.total,
-      data: result.data,
-    });
+    return NextResponse.json(
+      {
+        success: true,
+        total: result.total,
+        data: result.data,
+      },
+      {
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
+          'Pragma': 'no-cache',
+          'Expires': '0',
+        },
+      }
+    );
   } catch (error: any) {
     console.error('Error fetching executives:', error);
     return NextResponse.json(
