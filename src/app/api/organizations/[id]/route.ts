@@ -3,10 +3,10 @@ import { prisma } from '@/lib/prisma';
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> | { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await Promise.resolve(params);
+    const { id } = await params;
     const org = await prisma.organization.findUnique({
       where: { id },
       include: {
@@ -36,10 +36,10 @@ export async function GET(
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> | { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await Promise.resolve(params);
+    const { id } = await params;
     const body = await req.json();
     const existing = await prisma.organization.findUnique({
       where: { id },
@@ -115,10 +115,10 @@ export async function PUT(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> | { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await Promise.resolve(params);
+    const { id } = await params;
     const existing = await prisma.organization.findUnique({
       where: { id },
       include: { _count: { select: { executives: true, children: true } } },
