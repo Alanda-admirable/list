@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import fs from 'fs';
-import path from 'path';
+import { getExecutives, updateExecutiveRecord } from '@/lib/data-service';
 
 export const dynamic = 'force-dynamic';
 
@@ -18,46 +16,40 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, error: 'ไม่พบไฟล์รูปภาพ' }, { status: 400 });
     }
 
-    const uploadDir = path.join(process.cwd(), 'public', 'avatars');
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
-
     const results = [];
 
     // Case 1: Single file targeting specific executiveId
     if (executiveId && allFiles.length === 1) {
       const file = allFiles[0];
       const buffer = Buffer.from(await file.arrayBuffer());
-      const ext = path.extname(file.name) || '.jpg';
-      const cleanName = `real_exec_${executiveId}_${Date.now()}${ext}`;
-      const filePath = path.join(uploadDir, cleanName);
-      fs.writeFileSync(filePath, buffer);
-      const publicUrl = `/avatars/${cleanName}`;
+      const mimeType = file.type || 'image/jpeg';
+      const base64Url = `data:${mimeType};base64,${buffer.toString('base64')}`;
 
-      await prisma.executive.update({
-        where: { id: executiveId },
-        data: { avatarUrl: publicUrl },
+      await updateExecutiveRecord(executiveId, {
+        avatarUrl: base64Url,
+        photoVerified: true,
+        photoSource: 'ไฟล์อัปโหลดจากผู้ดูแลระบบ',
       });
 
       return NextResponse.json({
         success: true,
-        url: publicUrl,
+        url: base64Url,
         message: 'อัปโหลดและผูกรูปถ่ายจริงของผู้บริหารสำเร็จ',
       });
     }
 
     // Case 2: Bulk upload / Name matching
-    const allExecutives = await prisma.executive.findMany();
+    const { data: allExecutives } = await getExecutives({ limit: 1000 });
 
     for (const file of allFiles) {
       const buffer = Buffer.from(await file.arrayBuffer());
+      const mimeType = file.type || 'image/jpeg';
+      const base64Url = `data:${mimeType};base64,${buffer.toString('base64')}`;
       const originalName = file.name;
-      const baseNameWithoutExt = path.parse(originalName).name.toLowerCase();
-      const ext = path.extname(originalName) || '.jpg';
+      const baseNameWithoutExt = originalName.replace(/\.[^/.]+$/, '').toLowerCase();
 
       // Find matching executive
-      const matchedExec = allExecutives.find((e) => {
+      const matchedExec = allExecutives.find((e: any) => {
         const fn = e.firstName.toLowerCase().trim();
         const ln = e.lastName.toLowerCase().trim();
         return (
@@ -67,28 +59,24 @@ export async function POST(req: NextRequest) {
         );
       });
 
-      const cleanName = `photo_${Date.now()}_${Math.random().toString(36).substring(2, 7)}${ext}`;
-      const filePath = path.join(uploadDir, cleanName);
-      fs.writeFileSync(filePath, buffer);
-      const publicUrl = `/avatars/${cleanName}`;
-
       if (matchedExec) {
-        await prisma.executive.update({
-          where: { id: matchedExec.id },
-          data: { avatarUrl: publicUrl },
+        await updateExecutiveRecord(matchedExec.id, {
+          avatarUrl: base64Url,
+          photoVerified: true,
+          photoSource: 'ไฟล์อัปโหลดชุดหลายคน (Bulk Upload)',
         });
 
         results.push({
           fileName: originalName,
           matched: true,
           executive: `${matchedExec.prefix || ''}${matchedExec.firstName} ${matchedExec.lastName}`,
-          url: publicUrl,
+          url: base64Url,
         });
       } else {
         results.push({
           fileName: originalName,
           matched: false,
-          url: publicUrl,
+          url: base64Url,
         });
       }
     }

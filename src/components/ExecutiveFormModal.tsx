@@ -12,6 +12,10 @@ import {
   Search,
   ChevronDown,
   Check,
+  Camera,
+  Upload,
+  ExternalLink,
+  Link as LinkIcon,
 } from 'lucide-react';
 import { Executive } from './ExecutiveCard';
 import { PREFIXES } from '@/lib/thai-data';
@@ -166,6 +170,43 @@ export default function ExecutiveFormModal({
     setFormData((prev) => ({ ...prev, organizationId: org.id }));
     setOrgSearch(org.name);
     setIsOrgDropdownOpen(false);
+  };
+
+  // Process image file to compressed Base64 Data URL
+  const processImageFile = (file: File) => {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const MAX_WIDTH = 400;
+        const MAX_HEIGHT = 500;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height = Math.round((height * MAX_WIDTH) / width);
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width = Math.round((width * MAX_HEIGHT) / height);
+            height = MAX_HEIGHT;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx?.drawImage(img, 0, 0, width, height);
+
+        const base64Url = canvas.toDataURL('image/jpeg', 0.85);
+        setFormData((prev) => ({ ...prev, avatarUrl: base64Url }));
+      };
+      img.src = event.target?.result as string;
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -589,68 +630,109 @@ export default function ExecutiveFormModal({
           </div>
 
           {/* Photo Avatar Upload & Preview */}
-          <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
-            <label className="block text-xs font-bold text-slate-800">รูปภาพประจำตัวผู้บริหาร (Executive Portrait)</label>
+          <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-3">
+            <div className="flex items-center justify-between">
+              <label className="block text-xs font-bold text-slate-800 flex items-center">
+                <Camera className="w-3.5 h-3.5 mr-1 text-blue-600" />
+                รูปถ่ายประจำตัวผู้บริหาร (Executive Portrait)
+              </label>
+              {formData.avatarUrl && (
+                <span className="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                  ✓ มีรูปถ่ายแล้ว
+                </span>
+              )}
+            </div>
             
-            <div className="flex items-start space-x-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-3 sm:space-y-0 sm:space-x-4">
               {/* Preview Box */}
-              <div className="w-16 h-20 rounded-xl bg-white border-2 border-slate-300 overflow-hidden flex-shrink-0 flex items-center justify-center shadow-xs">
+              <div className="w-20 h-24 rounded-2xl bg-white border-2 border-slate-300 overflow-hidden flex-shrink-0 flex items-center justify-center shadow-sm relative group">
                 {formData.avatarUrl ? (
                   <img
                     src={formData.avatarUrl}
                     alt="Preview"
+                    referrerPolicy="no-referrer"
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <User className="w-8 h-8 text-slate-400" />
+                  <div className="flex flex-col items-center text-slate-400 text-center p-1">
+                    <User className="w-8 h-8 text-slate-300 mb-0.5" />
+                    <span className="text-[9px] text-slate-400 font-medium">ไม่มีรูป</span>
+                  </div>
                 )}
               </div>
 
-              {/* Upload Controls & URL Input */}
-              <div className="flex-1 space-y-2">
-                <div className="flex items-center space-x-2">
-                  <label className="cursor-pointer px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shadow-xs transition-colors inline-block">
-                    <span>📁 เลือกไฟล์รูปภาพ...</span>
+              {/* Upload Controls, Google Search & Paste Box */}
+              <div className="flex-1 w-full space-y-2">
+                <div className="flex flex-wrap items-center gap-2">
+                  {/* Choose local file */}
+                  <label className="cursor-pointer inline-flex items-center space-x-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-xs transition-colors">
+                    <Upload className="w-3.5 h-3.5" />
+                    <span>เลือกรูปจากเครื่อง...</span>
                     <input
                       type="file"
                       accept="image/*"
                       className="hidden"
-                      onChange={async (e) => {
+                      onChange={(e) => {
                         const f = e.target.files?.[0];
-                        if (!f) return;
-                        const data = new FormData();
-                        data.append('file', f);
-                        try {
-                          const res = await fetch('/api/upload', { method: 'POST', body: data });
-                          const resData = await res.json();
-                          if (resData.success && resData.url) {
-                            setFormData((prev) => ({ ...prev, avatarUrl: resData.url }));
-                          }
-                        } catch (err) {
-                          console.error('Failed to upload image', err);
-                        }
+                        if (f) processImageFile(f);
                       }}
                     />
                   </label>
 
+                  {/* Google Images Search */}
+                  {formData.firstName && (
+                    <a
+                      href={`https://www.google.com/search?tbm=isch&q=${encodeURIComponent(
+                        `"${formData.firstName} ${formData.lastName}" ${formData.position} ปทุมธานี`
+                      )}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center space-x-1 px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-xl text-xs font-bold transition-colors"
+                      title="ค้นหารูปจริงจาก Google Images"
+                    >
+                      <Search className="w-3.5 h-3.5 text-indigo-600" />
+                      <span>ค้นหารูปบน Google</span>
+                      <ExternalLink className="w-3 h-3 ml-0.5 text-indigo-500" />
+                    </a>
+                  )}
+
+                  {/* Clear photo */}
                   {formData.avatarUrl && (
                     <button
                       type="button"
                       onClick={() => setFormData((prev) => ({ ...prev, avatarUrl: '' }))}
-                      className="px-2.5 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg text-xs font-medium transition-colors"
+                      className="px-2.5 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl text-xs font-medium transition-colors"
                     >
                       ล้างรูป
                     </button>
                   )}
                 </div>
 
-                <input
-                  type="text"
-                  value={formData.avatarUrl}
-                  onChange={(e) => setFormData({ ...formData, avatarUrl: e.target.value })}
-                  placeholder="หรือใส่ที่อยู่ไฟล์ / URL รูปภาพ เช่น /avatars/... หรือ https://..."
-                  className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs focus:ring-2 focus:ring-blue-500 font-mono text-slate-800"
-                />
+                {/* Paste URL or Ctrl+V box */}
+                <div className="relative">
+                  <LinkIcon className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <input
+                    type="text"
+                    value={formData.avatarUrl.startsWith('data:') ? '(รูปภาพที่อัปโหลดจากเครื่องพร้อมใช้งาน)' : formData.avatarUrl}
+                    onChange={(e) => setFormData({ ...formData, avatarUrl: e.target.value })}
+                    onPaste={(e) => {
+                      const items = e.clipboardData?.items;
+                      if (!items) return;
+                      for (let i = 0; i < items.length; i++) {
+                        if (items[i].type.indexOf('image') !== -1) {
+                          const file = items[i].getAsFile();
+                          if (file) {
+                            e.preventDefault();
+                            processImageFile(file);
+                            return;
+                          }
+                        }
+                      }
+                    }}
+                    placeholder="วางลิงก์รูปภาพ หรือคลิกแล้วกด Ctrl+V เพื่อวางรูปภาพที่คัดลอกมา..."
+                    className="w-full pl-8 pr-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-blue-500 font-mono text-slate-800 placeholder:text-slate-400"
+                  />
+                </div>
               </div>
             </div>
           </div>
