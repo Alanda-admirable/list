@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import { getExecutives } from '@/lib/data-service';
+import { getExecutives, createExecutiveRecord } from '@/lib/data-service';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -47,24 +46,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const {
-      prefix,
-      firstName,
-      lastName,
-      position,
-      positionLevel,
-      organizationId,
-      status = 'ACTIVE',
-      appointmentDate,
-      endDate,
-      orderReference,
-      phone,
-      email,
-      avatarUrl,
-      bio,
-      orderIndex = 0,
-      adminName = 'ผู้ดูแลระบบ',
-    } = body;
+    const { prefix, firstName, lastName, position, organizationId } = body;
 
     if (!prefix || !firstName || !lastName || !position || !organizationId) {
       return NextResponse.json(
@@ -73,52 +55,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const newExecutive = await prisma.executive.create({
-      data: {
-        prefix,
-        firstName,
-        lastName,
-        position,
-        positionLevel,
-        organizationId,
-        status,
-        appointmentDate: appointmentDate ? new Date(appointmentDate) : null,
-        endDate: endDate ? new Date(endDate) : null,
-        orderReference,
-        phone,
-        email,
-        avatarUrl,
-        bio,
-        orderIndex: Number(orderIndex) || 0,
-      },
-      include: {
-        organization: true,
-      },
-    });
-
-    // Create Initial Position History
-    await prisma.positionHistory.create({
-      data: {
-        executiveId: newExecutive.id,
-        newPosition: position,
-        organizationName: newExecutive.organization.name,
-        effectiveDate: appointmentDate ? new Date(appointmentDate) : new Date(),
-        orderReference: orderReference || 'คำสั่งแต่งตั้งเริ่มต้น',
-        notes: 'บันทึกเข้าสู่ระบบครั้งแรก',
-      },
-    });
-
-    // Audit Log
-    await prisma.auditLog.create({
-      data: {
-        action: 'CREATE',
-        entityType: 'EXECUTIVE',
-        entityId: newExecutive.id,
-        title: `เพิ่มรายชื่อผู้บริหาร: ${prefix}${firstName} ${lastName} (${position})`,
-        details: JSON.stringify(newExecutive),
-        performedBy: adminName,
-      },
-    });
+    const newExecutive = await createExecutiveRecord(body);
 
     return NextResponse.json({
       success: true,
