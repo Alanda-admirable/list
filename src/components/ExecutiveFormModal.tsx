@@ -16,6 +16,7 @@ import {
   Upload,
   ExternalLink,
   Link as LinkIcon,
+  Loader2,
 } from 'lucide-react';
 import { Executive } from './ExecutiveCard';
 import { PREFIXES } from '@/lib/thai-data';
@@ -75,6 +76,7 @@ export default function ExecutiveFormModal({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [deleteConfirm, setDeleteConfirm] = useState(false);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
 
   // Auto-fetch organizations if not provided or empty
   useEffect(() => {
@@ -192,19 +194,47 @@ export default function ExecutiveFormModal({
     setIsOrgDropdownOpen(false);
   };
 
-  // Safe image processor with transparent PNG alpha channel fix
+  // Safe image processor with transparent PNG fix and direct Supabase Cloud upload
   const processImageFile = async (file: File) => {
     try {
       setError('');
-      const base64Url = await processAndCompressImage(file, {
+      setIsUploadingImage(true);
+
+      // 1. Generate client-side preview immediately
+      const base64Preview = await processAndCompressImage(file, {
         maxWidth: 400,
         maxHeight: 500,
         quality: 0.85,
         fillColor: '#FFFFFF',
       });
-      setFormData((prev) => ({ ...prev, avatarUrl: base64Url }));
+      setFormData((prev) => ({ ...prev, avatarUrl: base64Preview }));
+
+      // 2. Upload to Supabase Public Storage via /api/upload
+      const uploadForm = new FormData();
+      uploadForm.append('file', file);
+      if (executive?.id) {
+        uploadForm.append('executiveId', executive.id);
+      }
+
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: uploadForm,
+      });
+
+      const uploadData = await res.json();
+      if (uploadData.success && uploadData.url) {
+        setFormData((prev) => ({
+          ...prev,
+          avatarUrl: uploadData.url,
+          photoVerified: true,
+          photoSource: 'Supabase Public Storage',
+        }));
+      }
     } catch (err: any) {
+      console.error('Failed to upload image:', err);
       setError(err.message || 'ไม่สามารถประมวลผลรูปภาพได้');
+    } finally {
+      setIsUploadingImage(false);
     }
   };
 
@@ -663,7 +693,12 @@ export default function ExecutiveFormModal({
             <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-3 sm:space-y-0 sm:space-x-4">
               {/* Preview Box */}
               <div className="w-20 h-24 rounded-2xl bg-white border-2 border-slate-300 overflow-hidden flex-shrink-0 flex items-center justify-center shadow-sm relative group">
-                {formData.avatarUrl ? (
+                {isUploadingImage ? (
+                  <div className="flex flex-col items-center justify-center p-2 text-center text-blue-600">
+                    <Loader2 className="w-6 h-6 animate-spin text-blue-600 mb-1" />
+                    <span className="text-[8px] font-bold">กำลังอัปโหลด...</span>
+                  </div>
+                ) : formData.avatarUrl ? (
                   <img
                     src={formData.avatarUrl}
                     alt="Preview"

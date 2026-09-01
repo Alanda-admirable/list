@@ -18,8 +18,6 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { mergeWithLocalData, saveExecutiveUpdateLocally } from '@/lib/client-sync';
-import { processAndCompressImage } from '@/lib/image-processor';
-import { sanitizeSafeUrl } from '@/lib/security';
 
 interface ExecutiveItem {
   id: string;
@@ -163,32 +161,23 @@ export default function PhotoMatcherPage() {
     setFeedback(null);
 
     try {
-      // 1. Client-side Safe Canvas Compression (fixes transparent PNG black background & scales to 400x500)
-      const base64Url = await processAndCompressImage(file, {
-        maxWidth: 400,
-        maxHeight: 500,
-        quality: 0.85,
-        fillColor: '#FFFFFF',
-      });
+      // 1. Upload directly to Supabase Public Storage via /api/upload
+      const uploadForm = new FormData();
+      uploadForm.append('file', file);
+      uploadForm.append('executiveId', executiveId);
 
-      // 2. Persist update directly
-      const res = await fetch(`/api/executives/${executiveId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          avatarUrl: base64Url,
-          photoVerified: true,
-          photoSource: 'รูปถ่ายอัปโหลดผ่านระบบจับคู่รูปถ่าย (Photo Matcher)',
-        }),
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: uploadForm,
       });
       const data = await res.json();
 
-      if (data.success) {
+      if (data.success && data.url) {
         setExecutives((prev) =>
-          prev.map((ex) => (ex.id === executiveId ? { ...ex, avatarUrl: base64Url, photoVerified: true } : ex))
+          prev.map((ex) => (ex.id === executiveId ? { ...ex, avatarUrl: data.url, photoVerified: true } : ex))
         );
-        saveExecutiveUpdateLocally(executiveId, { avatarUrl: base64Url, photoVerified: true });
-        setFeedback({ id: executiveId, msg: 'อัปโหลดและปรับขนาดรูปถ่ายจริงสำเร็จ!', type: 'success' });
+        saveExecutiveUpdateLocally(executiveId, { avatarUrl: data.url, photoVerified: true });
+        setFeedback({ id: executiveId, msg: 'อัปโหลดภาพถ่ายขึ้น Supabase Cloud สำเร็จ!', type: 'success' });
       } else {
         setFeedback({ id: executiveId, msg: data.error || 'อัปโหลดไม่สำเร็จ', type: 'error' });
       }

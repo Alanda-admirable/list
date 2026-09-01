@@ -71,6 +71,11 @@ export default function ExecutiveCard({
   isAdmin = false,
 }: CardProps) {
   const [imgError, setImgError] = React.useState(false);
+
+  React.useEffect(() => {
+    setImgError(false);
+  }, [executive.avatarUrl]);
+
   const statusInfo = STATUS_LABELS[executive.status] || STATUS_LABELS.ACTIVE;
 
   const levelBadge = {
