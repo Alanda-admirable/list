@@ -39,8 +39,9 @@ export default function AdminExecutivesPage() {
   const fetchOrgs = async () => {
     try {
       const res = await fetch(`/api/organizations?_t=${Date.now()}`, { cache: 'no-store' });
-      const data = await res.json();
-      if (data.success) {
+      const text = await res.text();
+      const data = text.startsWith('{') ? JSON.parse(text) : null;
+      if (data?.success) {
         setOrganizations(data.data);
       }
     } catch (e) {
@@ -57,14 +58,23 @@ export default function AdminExecutivesPage() {
       if (level !== 'ALL') params.append('level', level);
       if (province) params.append('province', province);
       if (status) params.append('status', status);
+      params.append('limit', '1000');
+      params.append('_t', Date.now().toString());
+
       const [dataRes, cloudOverrides] = await Promise.all([
-        fetch(`/api/executives?${params.toString()}`, { cache: 'no-store' }).then((r) => r.json()),
+        fetch(`/api/executives?${params.toString()}`, { cache: 'no-store' })
+          .then((r) => r.text())
+          .then((t) => (t.startsWith('{') ? JSON.parse(t) : { success: false, data: [] }))
+          .catch(() => ({ success: false, data: [] })),
         fetchCloudOverridesClient(),
       ]);
 
-      if (dataRes.success && Array.isArray(dataRes.data)) {
+      if (dataRes?.success && Array.isArray(dataRes.data)) {
         const merged = mergeWithLocalData(dataRes.data, cloudOverrides);
         setExecutives(merged);
+      } else {
+        const merged = mergeWithLocalData([], cloudOverrides);
+        if (merged.length > 0) setExecutives(merged);
       }
     } catch (e) {
       console.error('Failed to load executives', e);

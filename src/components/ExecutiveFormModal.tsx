@@ -207,8 +207,7 @@ export default function ExecutiveFormModal({
         quality: 0.85,
         fillColor: '#FFFFFF',
       });
-      setFormData((prev) => ({ ...prev, avatarUrl: base64Preview }));
-
+      
       // 2. Upload to Supabase Public Storage via /api/upload
       const uploadForm = new FormData();
       uploadForm.append('file', file);
@@ -216,22 +215,29 @@ export default function ExecutiveFormModal({
         uploadForm.append('executiveId', executive.id);
       }
 
-      const res = await fetch('/api/upload', {
-        method: 'POST',
-        body: uploadForm,
-      });
-
-      const uploadData = await res.json();
-      if (uploadData.success && uploadData.url) {
-        setFormData((prev) => ({
-          ...prev,
-          avatarUrl: uploadData.url,
-          photoVerified: true,
-          photoSource: 'Supabase Public Storage',
-        }));
+      let uploadedUrl: string | null = null;
+      try {
+        const res = await fetch('/api/upload', {
+          method: 'POST',
+          body: uploadForm,
+        });
+        const text = await res.text();
+        const uploadData = text.startsWith('{') ? JSON.parse(text) : null;
+        if (uploadData?.success && uploadData?.url) {
+          uploadedUrl = uploadData.url;
+        }
+      } catch (uploadErr) {
+        console.warn('API upload failed, using local preview:', uploadErr);
       }
+
+      setFormData((prev) => ({
+        ...prev,
+        avatarUrl: uploadedUrl || base64Preview,
+        photoVerified: true,
+        photoSource: uploadedUrl ? 'Supabase Public Storage' : 'Local Storage',
+      }));
     } catch (err: any) {
-      console.error('Failed to upload image:', err);
+      console.error('Failed to process image:', err);
       setError(err.message || 'ไม่สามารถประมวลผลรูปภาพได้');
     } finally {
       setIsUploadingImage(false);
@@ -247,15 +253,24 @@ export default function ExecutiveFormModal({
       const url = isEdit ? `/api/executives/${executive.id}` : '/api/executives';
       const method = isEdit ? 'PUT' : 'POST';
 
-      const res = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
+      let serverData: any = null;
 
-      const data = await res.json();
-      if (!data.success) {
-        throw new Error(data.error || 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+      try {
+        const res = await fetch(url, {
+          method,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData),
+        });
+        const text = await res.text();
+        if (text.startsWith('{')) {
+          serverData = JSON.parse(text);
+        }
+      } catch (networkErr) {
+        console.warn('Network sync failed, saving locally:', networkErr);
+      }
+
+      if (serverData && !serverData.success && serverData.error) {
+        throw new Error(serverData.error);
       }
 
       if (isEdit && executive) {
@@ -263,12 +278,16 @@ export default function ExecutiveFormModal({
           ...formData,
           organization: selectedOrg || executive.organization,
         });
-      } else if (data.data) {
+      } else {
+        const newId = serverData?.data?.id || ('exec_' + Date.now());
         saveExecutiveCreateLocally({
-          ...data.data,
           ...formData,
+          id: newId,
           organization: selectedOrg,
-        });
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          histories: [],
+        } as any);
       }
 
       onSaved();
@@ -286,16 +305,12 @@ export default function ExecutiveFormModal({
     setError('');
 
     try {
-      const res = await fetch(`/api/executives/${executive.id}`, {
-        method: 'DELETE',
-      });
-      const data = await res.json();
-      if (!data.success) {
-        throw new Error(data.error || 'เกิดข้อผิดพลาดในการลบข้อมูล');
+      try {
+        await fetch(`/api/executives/${executive.id}`, { method: 'DELETE' });
+      } catch (e) {
+        console.warn('Server delete failed, applying local delete', e);
       }
-
       saveExecutiveDeleteLocally(executive.id);
-
       onSaved();
       onClose();
     } catch (err: any) {

@@ -66,14 +66,18 @@ export default function ReportExportPage() {
       params.append('_t', Date.now().toString());
 
       const res = await fetch(`/api/organizations?${params.toString()}`, { cache: 'no-store' });
-      const data = await res.json();
-      if (data.success) {
+      const text = await res.text();
+      const data = text.startsWith('{') ? JSON.parse(text) : null;
+      if (data?.success) {
         // Fetch full executives and apply client local & cloud overrides
         const [orgsRes, cloudOverrides] = await Promise.all([
-          fetch(`/api/executives?limit=1000&_t=${Date.now()}`, { cache: 'no-store' }).then((r) => r.json()),
+          fetch(`/api/executives?limit=1000&_t=${Date.now()}`, { cache: 'no-store' })
+            .then((r) => r.text())
+            .then((t) => (t.startsWith('{') ? JSON.parse(t) : { success: false, data: [] }))
+            .catch(() => ({ success: false, data: [] })),
           fetchCloudOverridesClient(),
         ]);
-        const rawExecsList: Executive[] = orgsRes.data || [];
+        const rawExecsList: Executive[] = orgsRes?.data || [];
         const execsList: Executive[] = mergeWithLocalData(rawExecsList, cloudOverrides);
 
         // Group executives by organizationId

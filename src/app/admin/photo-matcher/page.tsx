@@ -138,9 +138,10 @@ export default function PhotoMatcherPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ executiveId, imageUrl: url }),
       });
-      const data = await res.json();
+      const text = await res.text();
+      const data = text.startsWith('{') ? JSON.parse(text) : null;
 
-      if (data.success) {
+      if (data?.success) {
         setExecutives((prev) =>
           prev.map((ex) => (ex.id === executiveId ? { ...ex, avatarUrl: data.avatarUrl } : ex))
         );
@@ -148,7 +149,7 @@ export default function PhotoMatcherPage() {
         setUrlInputs((prev) => ({ ...prev, [executiveId]: '' }));
         setFeedback({ id: executiveId, msg: 'บันทึกรูปถ่ายจริงสำเร็จ!', type: 'success' });
       } else {
-        setFeedback({ id: executiveId, msg: data.error || 'บันทึกไม่สำเร็จ', type: 'error' });
+        setFeedback({ id: executiveId, msg: data?.error || 'บันทึกไม่สำเร็จ', type: 'error' });
       }
     } catch (err: any) {
       setFeedback({ id: executiveId, msg: err.message || 'บันทึกไม่สำเร็จ', type: 'error' });
@@ -172,16 +173,17 @@ export default function PhotoMatcherPage() {
         method: 'POST',
         body: uploadForm,
       });
-      const data = await res.json();
+      const text = await res.text();
+      const data = text.startsWith('{') ? JSON.parse(text) : null;
 
-      if (data.success && data.url) {
+      if (data?.success && data?.url) {
         setExecutives((prev) =>
           prev.map((ex) => (ex.id === executiveId ? { ...ex, avatarUrl: data.url, photoVerified: true } : ex))
         );
         saveExecutiveUpdateLocally(executiveId, { avatarUrl: data.url, photoVerified: true });
         setFeedback({ id: executiveId, msg: 'อัปโหลดภาพถ่ายขึ้น Supabase Cloud สำเร็จ!', type: 'success' });
       } else {
-        setFeedback({ id: executiveId, msg: data.error || 'อัปโหลดไม่สำเร็จ', type: 'error' });
+        setFeedback({ id: executiveId, msg: data?.error || 'อัปโหลดไม่สำเร็จ', type: 'error' });
       }
     } catch (err: any) {
       setFeedback({ id: executiveId, msg: err.message || 'อัปโหลดไม่สำเร็จ', type: 'error' });
@@ -199,8 +201,9 @@ export default function PhotoMatcherPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ avatarUrl: null }),
       });
-      const data = await res.json();
-      if (data.success) {
+      const text = await res.text();
+      const data = text.startsWith('{') ? JSON.parse(text) : null;
+      if (data?.success || res.ok) {
         setExecutives((prev) =>
           prev.map((ex) => (ex.id === executiveId ? { ...ex, avatarUrl: null } : ex))
         );
@@ -231,12 +234,13 @@ export default function PhotoMatcherPage() {
         method: 'POST',
         body: formData,
       });
-      const data = await res.json();
-      if (data.success) {
+      const text = await res.text();
+      const data = text.startsWith('{') ? JSON.parse(text) : null;
+      if (data?.success) {
         setBulkResult(`สำเร็จ! จับคู่ภาพถ่ายจริงได้ ${data.matchedCount} จาก ${data.totalCount} ไฟล์`);
         fetchExecutives();
       } else {
-        setBulkResult(`ข้อผิดพลาด: ${data.error}`);
+        setBulkResult(`ข้อผิดพลาด: ${data?.error || 'ไม่สามารถอัปโหลดได้'}`);
       }
     } catch (err: any) {
       setBulkResult(`อัปโหลดล้มเหลว: ${err.message}`);

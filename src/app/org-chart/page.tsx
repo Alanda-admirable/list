@@ -59,10 +59,13 @@ export default function OrgChartPage() {
       if (selectedProvince) params.append('province', selectedProvince);
 
       const [dataRes, cloudOverrides] = await Promise.all([
-        fetch(`/api/organizations?${params.toString()}`, { cache: 'no-store' }).then((r) => r.json()),
+        fetch(`/api/organizations?${params.toString()}`, { cache: 'no-store' })
+          .then((r) => r.text())
+          .then((t) => (t.startsWith('{') ? JSON.parse(t) : { success: false, data: [] }))
+          .catch(() => ({ success: false, data: [] })),
         fetchCloudOverridesClient(),
       ]);
-      if (dataRes.success && Array.isArray(dataRes.data)) {
+      if (dataRes?.success && Array.isArray(dataRes.data)) {
         const syncedTree = applyLocalSyncToTree(dataRes.data, cloudOverrides);
         setTreeData(syncedTree);
       }
