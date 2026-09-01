@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getExecutives, updateExecutiveRecord } from '@/lib/data-service';
+import { uploadAvatarToSupabase, isSupabaseConfigured } from '@/lib/supabase';
 
 export const dynamic = 'force-dynamic';
 
@@ -18,23 +19,41 @@ export async function POST(req: NextRequest) {
 
     const results = [];
 
+    // Helper to process single image file to public URL or fallback base64
+    async function processImageFile(file: File): Promise<{ url: string; isCloudStorage: boolean }> {
+      const buffer = Buffer.from(await file.arrayBuffer());
+      const mimeType = file.type || 'image/jpeg';
+
+      if (isSupabaseConfigured) {
+        const uploadRes = await uploadAvatarToSupabase(buffer, file.name, mimeType);
+        if (uploadRes.success && uploadRes.url) {
+          return { url: uploadRes.url, isCloudStorage: true };
+        }
+      }
+
+      // Fallback to Base64 Data URL if Supabase is not yet configured or failed
+      const base64Url = `data:${mimeType};base64,${buffer.toString('base64')}`;
+      return { url: base64Url, isCloudStorage: false };
+    }
+
     // Case 1: Single file targeting specific executiveId
     if (executiveId && allFiles.length === 1) {
       const file = allFiles[0];
-      const buffer = Buffer.from(await file.arrayBuffer());
-      const mimeType = file.type || 'image/jpeg';
-      const base64Url = `data:${mimeType};base64,${buffer.toString('base64')}`;
+      const { url, isCloudStorage } = await processImageFile(file);
 
       await updateExecutiveRecord(executiveId, {
-        avatarUrl: base64Url,
+        avatarUrl: url,
         photoVerified: true,
-        photoSource: 'ไฟล์อัปโหลดจากผู้ดูแลระบบ',
+        photoSource: isCloudStorage ? 'Supabase Public Storage' : 'ไฟล์อัปโหลดจากผู้ดูแลระบบ',
       });
 
       return NextResponse.json({
         success: true,
-        url: base64Url,
-        message: 'อัปโหลดและผูกรูปถ่ายจริงของผู้บริหารสำเร็จ',
+        url,
+        storage: isCloudStorage ? 'supabase' : 'local',
+        message: isCloudStorage
+          ? 'อัปโหลดภาพขึ้น Supabase Public Storage และบันทึกเรียบร้อย'
+          : 'อัปโหลดและผูกรูปถ่ายจริงของผู้บริหารสำเร็จ',
       });
     }
 
@@ -42,9 +61,7 @@ export async function POST(req: NextRequest) {
     const { data: allExecutives } = await getExecutives({ limit: 1000 });
 
     for (const file of allFiles) {
-      const buffer = Buffer.from(await file.arrayBuffer());
-      const mimeType = file.type || 'image/jpeg';
-      const base64Url = `data:${mimeType};base64,${buffer.toString('base64')}`;
+      const { url, isCloudStorage } = await processImageFile(file);
       const originalName = file.name;
       const baseNameWithoutExt = originalName.replace(/\.[^/.]+$/, '').toLowerCase();
 
@@ -61,22 +78,24 @@ export async function POST(req: NextRequest) {
 
       if (matchedExec) {
         await updateExecutiveRecord(matchedExec.id, {
-          avatarUrl: base64Url,
+          avatarUrl: url,
           photoVerified: true,
-          photoSource: 'ไฟล์อัปโหลดชุดหลายคน (Bulk Upload)',
+          photoSource: isCloudStorage ? 'Supabase Public Storage (Bulk)' : 'ไฟล์อัปโหลดชุดหลายคน (Bulk Upload)',
         });
 
         results.push({
           fileName: originalName,
           matched: true,
           executive: `${matchedExec.prefix || ''}${matchedExec.firstName} ${matchedExec.lastName}`,
-          url: base64Url,
+          url,
+          storage: isCloudStorage ? 'supabase' : 'local',
         });
       } else {
         results.push({
           fileName: originalName,
           matched: false,
-          url: base64Url,
+          url,
+          storage: isCloudStorage ? 'supabase' : 'local',
         });
       }
     }
@@ -86,6 +105,7 @@ export async function POST(req: NextRequest) {
       data: results,
       matchedCount: results.filter((r) => r.matched).length,
       totalCount: results.length,
+      isSupabaseActive: isSupabaseConfigured,
       message: `ประมวลผลอัปโหลด ${results.length} ไฟล์ (จับคู่สำเร็จ ${results.filter((r) => r.matched).length} ท่าน)`,
     });
   } catch (error: any) {
