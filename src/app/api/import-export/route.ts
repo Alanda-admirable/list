@@ -1,8 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import {
+  getExecutives,
+  getOrganizations,
+  createOrganizationRecord,
+  createExecutiveRecord,
+  updateExecutiveRecord,
+} from '@/lib/data-service';
 import {
   generateTemplateBuffer,
   exportExecutivesToExcel,
+  exportExecutivesToCsv,
   parseExcelBuffer,
   ExcelExecutiveRow,
 } from '@/lib/excel';
@@ -11,6 +18,7 @@ export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const type = searchParams.get('type') || 'export';
+    const format = searchParams.get('format') || 'xlsx';
 
     if (type === 'template') {
       const buffer = generateTemplateBuffer();
@@ -18,33 +26,50 @@ export async function GET(req: NextRequest) {
         headers: {
           'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
           'Content-Disposition': 'attachment; filename="thai_gov_executives_template.xlsx"',
+          'Cache-Control': 'no-store, max-age=0',
         },
       });
     }
 
-    // Export with filters
+    // Export with filters from Edge DataService
     const level = searchParams.get('level');
     const province = searchParams.get('province');
     const status = searchParams.get('status');
 
-    const where: any = {};
-    if (level && level !== 'ALL') where.organization = { ...where.organization, level };
-    if (province) where.organization = { ...where.organization, province };
-    if (status) where.status = status;
+    const execsResult = await getExecutives({ limit: 5000 });
+    let executives = execsResult.data;
+    if (level && level !== 'ALL') {
+      executives = executives.filter((e) => e.organization?.level === level);
+    }
+    if (province) {
+      executives = executives.filter((e) => e.organization?.province === province);
+    }
+    if (status) {
+      executives = executives.filter((e) => e.status === status);
+    }
 
-    const executives = await prisma.executive.findMany({
-      where,
-      include: { organization: true },
-      orderBy: [{ orderIndex: 'asc' }, { createdAt: 'desc' }],
-    });
-
-    const buffer = exportExecutivesToExcel(executives);
     const timestamp = new Date().toISOString().split('T')[0];
+
+    // CSV format with UTF-8 BOM
+    if (format === 'csv') {
+      const csvContent = exportExecutivesToCsv(executives);
+      return new NextResponse(csvContent, {
+        headers: {
+          'Content-Type': 'text/csv; charset=utf-8',
+          'Content-Disposition': `attachment; filename="thai_gov_directory_${timestamp}.csv"`,
+          'Cache-Control': 'no-store, max-age=0',
+        },
+      });
+    }
+
+    // Default: Excel .xlsx format
+    const buffer = exportExecutivesToExcel(executives);
 
     return new NextResponse(new Uint8Array(buffer), {
       headers: {
         'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         'Content-Disposition': `attachment; filename="thai_gov_directory_${timestamp}.xlsx"`,
+        'Cache-Control': 'no-store, max-age=0',
       },
     });
   } catch (error: any) {
@@ -77,6 +102,8 @@ export async function POST(req: NextRequest) {
     let failedCount = 0;
     const errors: { row: number; reason: string }[] = [];
 
+    const existingOrgs = await getOrganizations();
+
     for (let i = 0; i < rows.length; i++) {
       const row = rows[i];
       const rowNum = i + 2; // header is row 1
@@ -98,10 +125,10 @@ export async function POST(req: NextRequest) {
       const avatarUrl = row['URL รูปภาพ'] ? String(row['URL รูปภาพ']).trim() : null;
       const bio = row['ประวัติย่อ/นโยบาย'] ? String(row['ประวัติย่อ/นโยบาย']).trim() : null;
 
-      let appointmentDate: Date | null = null;
+      let appointmentDate: string | null = null;
       if (row['วันที่แต่งตั้ง (YYYY-MM-DD)']) {
         const parsed = new Date(row['วันที่แต่งตั้ง (YYYY-MM-DD)']);
-        if (!isNaN(parsed.getTime())) appointmentDate = parsed;
+        if (!isNaN(parsed.getTime())) appointmentDate = parsed.toISOString();
       }
 
       if (!orgName || !firstName || !position) {
@@ -111,95 +138,59 @@ export async function POST(req: NextRequest) {
       }
 
       // Find or create organization
-      let org = await prisma.organization.findFirst({
-        where: { name: orgName },
-      });
+      let org: any = existingOrgs.find((o) => o.name.toLowerCase() === orgName.toLowerCase());
 
       if (!org) {
-        org = await prisma.organization.create({
-          data: {
-            name: orgName,
-            level: ['CENTRAL', 'PROVINCIAL', 'DISTRICT', 'LOCAL'].includes(level) ? level : 'CENTRAL',
-            category,
-            province,
-            district,
-            code: `ORG-AUTO-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
-          },
+        org = await createOrganizationRecord({
+          name: orgName,
+          level: ['CENTRAL', 'PROVINCIAL', 'DISTRICT', 'LOCAL'].includes(level) ? level : 'CENTRAL',
+          category,
+          province,
+          district,
+          code: `ORG-AUTO-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
         });
+        existingOrgs.push(org as any);
       }
 
-      // Check if executive exists in this org with same name & position
-      const existingExec = await prisma.executive.findFirst({
-        where: {
-          firstName,
-          lastName,
-          organizationId: org.id,
-        },
-      });
+      // Check if executive exists
+      const allExecs = await getExecutives({ limit: 5000, organizationId: org.id });
+      const existingExec = allExecs.data.find(
+        (e) => e.firstName.toLowerCase() === firstName.toLowerCase() && e.lastName?.toLowerCase() === lastName.toLowerCase()
+      );
 
       if (existingExec) {
-        // Update
-        await prisma.executive.update({
-          where: { id: existingExec.id },
-          data: {
-            prefix,
-            position,
-            positionLevel,
-            status: ['ACTIVE', 'ACTING', 'VACANT', 'RETIRED'].includes(status) ? status : 'ACTIVE',
-            appointmentDate: appointmentDate || existingExec.appointmentDate,
-            orderReference: orderReference || existingExec.orderReference,
-            phone: phone || existingExec.phone,
-            email: email || existingExec.email,
-            avatarUrl: avatarUrl || existingExec.avatarUrl,
-            bio: bio || existingExec.bio,
-          },
+        await updateExecutiveRecord(existingExec.id, {
+          prefix,
+          position,
+          positionLevel,
+          status: ['ACTIVE', 'ACTING', 'VACANT', 'RETIRED'].includes(status) ? status : 'ACTIVE',
+          appointmentDate: appointmentDate || existingExec.appointmentDate,
+          orderReference: orderReference || existingExec.orderReference,
+          phone: phone || existingExec.phone,
+          email: email || existingExec.email,
+          avatarUrl: avatarUrl || existingExec.avatarUrl,
+          bio: bio || existingExec.bio,
         });
       } else {
-        // Create new
-        const createdExec = await prisma.executive.create({
-          data: {
-            prefix,
-            firstName,
-            lastName,
-            position,
-            positionLevel,
-            organizationId: org.id,
-            status: ['ACTIVE', 'ACTING', 'VACANT', 'RETIRED'].includes(status) ? status : 'ACTIVE',
-            appointmentDate,
-            orderReference,
-            phone,
-            email,
-            avatarUrl,
-            bio,
-          },
-        });
-
-        await prisma.positionHistory.create({
-          data: {
-            executiveId: createdExec.id,
-            newPosition: position,
-            organizationName: org.name,
-            effectiveDate: appointmentDate || new Date(),
-            orderReference: orderReference || 'นำเข้าจากไฟล์ Excel',
-            notes: 'นำเข้าข้อมูลเข้าสู่ระบบจากไฟล์ Excel',
-          },
+        await createExecutiveRecord({
+          prefix,
+          firstName,
+          lastName,
+          position,
+          positionLevel,
+          organizationId: org.id,
+          status: ['ACTIVE', 'ACTING', 'VACANT', 'RETIRED'].includes(status) ? status : 'ACTIVE',
+          appointmentDate,
+          orderReference,
+          phone,
+          email,
+          avatarUrl,
+          bio,
         });
       }
 
       successCount++;
     }
-
-    // Record Audit Log
-    await prisma.auditLog.create({
-      data: {
-        action: 'IMPORT',
-        entityType: 'EXECUTIVE',
-        entityId: 'EXCEL-IMPORT',
-        title: `นำเข้าข้อมูลจากไฟล์ Excel: สำเร็จ ${successCount} รายการ, ผิดพลาด ${failedCount} รายการ`,
-        details: JSON.stringify({ filename: file.name, totalRows: rows.length, successCount, failedCount, errors }),
-        performedBy: 'ผู้ดูแลระบบ',
-      },
-    });
 
     return NextResponse.json({
       success: true,

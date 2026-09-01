@@ -70,6 +70,7 @@ export default function ExecutiveCard({
   onEdit,
   isAdmin = false,
 }: CardProps) {
+  const [imgError, setImgError] = React.useState(false);
   const statusInfo = STATUS_LABELS[executive.status] || STATUS_LABELS.ACTIVE;
 
   const levelBadge = {
@@ -86,8 +87,17 @@ export default function ExecutiveCard({
 
   return (
     <div
+      role="button"
+      tabIndex={0}
       onClick={() => onSelect(executive)}
-      className="group relative bg-white rounded-2xl p-5 shadow-sm hover:shadow-xl border border-slate-200/90 transition-all duration-200 hover:-translate-y-1 flex flex-col justify-between cursor-pointer"
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onSelect(executive);
+        }
+      }}
+      aria-label={`ข้อมูลผู้บริหาร: ${executive.prefix || ''}${executive.firstName} ${executive.lastName}, ${executive.position}`}
+      className="group relative bg-white rounded-2xl p-5 shadow-sm hover:shadow-xl border border-slate-200/90 transition-all duration-200 hover:-translate-y-1 flex flex-col justify-between cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
     >
       <div>
         {/* Top Badges */}
@@ -108,24 +118,14 @@ export default function ExecutiveCard({
         <div className="flex items-start space-x-3.5 mb-3.5">
           {/* Avatar Portrait */}
           <div className="relative flex-shrink-0">
-            <div className="w-16 h-16 sm:w-18 sm:h-18 rounded-xl overflow-hidden bg-slate-100 border-2 border-slate-200/80 shadow-inner group-hover:border-blue-500 transition-colors">
-              {executive.avatarUrl && !isVacant ? (
+            <div className="w-16 h-16 sm:w-18 sm:h-18 rounded-xl overflow-hidden bg-slate-100 border-2 border-slate-200/80 shadow-inner group-hover:border-blue-500 transition-colors flex items-center justify-center">
+              {executive.avatarUrl && !isVacant && !imgError ? (
                 <img
                   src={executive.avatarUrl}
                   alt={`${executive.firstName} ${executive.lastName}`}
                   referrerPolicy="no-referrer"
                   className="w-full h-full object-cover"
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none';
-                    if (e.currentTarget.parentElement) {
-                      e.currentTarget.parentElement.innerHTML = `
-                        <div class="w-full h-full flex flex-col items-center justify-center bg-slate-100 text-slate-400">
-                          <svg class="w-8 h-8 text-slate-300" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                          <span class="text-[8px] text-slate-400 font-medium">รอรูปถ่าย</span>
-                        </div>
-                      `;
-                    }
-                  }}
+                  onError={() => setImgError(true)}
                 />
               ) : (
                 <div className="w-full h-full flex flex-col items-center justify-center bg-slate-100 text-slate-400">

@@ -18,6 +18,8 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { mergeWithLocalData, saveExecutiveUpdateLocally } from '@/lib/client-sync';
+import { processAndCompressImage } from '@/lib/image-processor';
+import { sanitizeSafeUrl } from '@/lib/security';
 
 interface ExecutiveItem {
   id: string;
@@ -160,23 +162,33 @@ export default function PhotoMatcherPage() {
     setSavingId(executiveId);
     setFeedback(null);
 
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('executiveId', executiveId);
-
     try {
-      const res = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
+      // 1. Client-side Safe Canvas Compression (fixes transparent PNG black background & scales to 400x500)
+      const base64Url = await processAndCompressImage(file, {
+        maxWidth: 400,
+        maxHeight: 500,
+        quality: 0.85,
+        fillColor: '#FFFFFF',
+      });
+
+      // 2. Persist update directly
+      const res = await fetch(`/api/executives/${executiveId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          avatarUrl: base64Url,
+          photoVerified: true,
+          photoSource: 'รูปถ่ายอัปโหลดผ่านระบบจับคู่รูปถ่าย (Photo Matcher)',
+        }),
       });
       const data = await res.json();
 
       if (data.success) {
         setExecutives((prev) =>
-          prev.map((ex) => (ex.id === executiveId ? { ...ex, avatarUrl: data.url } : ex))
+          prev.map((ex) => (ex.id === executiveId ? { ...ex, avatarUrl: base64Url, photoVerified: true } : ex))
         );
-        saveExecutiveUpdateLocally(executiveId, { avatarUrl: data.url, photoVerified: true });
-        setFeedback({ id: executiveId, msg: 'อัปโหลดรูปถ่ายจริงสำเร็จ!', type: 'success' });
+        saveExecutiveUpdateLocally(executiveId, { avatarUrl: base64Url, photoVerified: true });
+        setFeedback({ id: executiveId, msg: 'อัปโหลดและปรับขนาดรูปถ่ายจริงสำเร็จ!', type: 'success' });
       } else {
         setFeedback({ id: executiveId, msg: data.error || 'อัปโหลดไม่สำเร็จ', type: 'error' });
       }

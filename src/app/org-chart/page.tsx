@@ -8,6 +8,7 @@ import OrgChartTree from '@/components/OrgChartTree';
 import ExecutiveModal from '@/components/ExecutiveModal';
 import { Executive } from '@/components/ExecutiveCard';
 import { ALL_PROVINCES, ORG_LEVELS } from '@/lib/thai-data';
+import { mergeWithLocalData, useExecutiveSync } from '@/lib/client-sync';
 import {
   Network,
   Loader2,
@@ -35,6 +36,20 @@ export default function OrgChartPage() {
   const [drilldownStack, setDrilldownStack] = useState<any[]>([]);
   const [selectedExecutive, setSelectedExecutive] = useState<Executive | null>(null);
 
+  // Recursively apply local executive overrides to tree nodes
+  const applyLocalSyncToTree = useCallback((nodes: any[]): any[] => {
+    return nodes.map((node) => {
+      const mergedExecs = node.executives && Array.isArray(node.executives)
+        ? mergeWithLocalData(node.executives)
+        : [];
+      return {
+        ...node,
+        executives: mergedExecs,
+        children: node.children ? applyLocalSyncToTree(node.children) : [],
+      };
+    });
+  }, []);
+
   const fetchTree = useCallback(async () => {
     setLoading(true);
     try {
@@ -42,18 +57,23 @@ export default function OrgChartPage() {
       params.append('tree', 'true');
       if (selectedLevel !== 'ALL') params.append('level', selectedLevel);
       if (selectedProvince) params.append('province', selectedProvince);
+      params.append('_t', Date.now().toString());
 
-      const res = await fetch(`/api/organizations?${params.toString()}`);
+      const res = await fetch(`/api/organizations?${params.toString()}`, { cache: 'no-store' });
       const data = await res.json();
-      if (data.success) {
-        setTreeData(data.data);
+      if (data.success && Array.isArray(data.data)) {
+        const syncedTree = applyLocalSyncToTree(data.data);
+        setTreeData(syncedTree);
       }
     } catch (e) {
       console.error('Failed to load org tree', e);
     } finally {
       setLoading(false);
     }
-  }, [selectedLevel, selectedProvince]);
+  }, [selectedLevel, selectedProvince, applyLocalSyncToTree]);
+
+  // Real-time synchronization across tabs and local events
+  useExecutiveSync(fetchTree);
 
   useEffect(() => {
     fetchTree();

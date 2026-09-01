@@ -5,6 +5,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { ALL_PROVINCES, ORG_LEVELS, STATUS_LABELS } from '@/lib/thai-data';
 import { Executive } from '@/components/ExecutiveCard';
+import { mergeWithLocalData, useExecutiveSync } from '@/lib/client-sync';
 import {
   Printer,
   FileSpreadsheet,
@@ -62,15 +63,16 @@ export default function ReportExportPage() {
       const params = new URLSearchParams();
       if (selectedLevel !== 'ALL') params.append('level', selectedLevel);
       if (selectedProvince) params.append('province', selectedProvince);
+      params.append('_t', Date.now().toString());
 
-      const res = await fetch(`/api/organizations?${params.toString()}`);
+      const res = await fetch(`/api/organizations?${params.toString()}`, { cache: 'no-store' });
       const data = await res.json();
       if (data.success) {
-        // For each organization, ensure we have its executives
-        // If the org endpoint returns items, let's also fetch full executives for complete directory
-        const orgsRes = await fetch(`/api/executives?limit=1000`);
+        // Fetch full executives and apply client local overrides
+        const orgsRes = await fetch(`/api/executives?limit=1000&_t=${Date.now()}`, { cache: 'no-store' });
         const execsData = await orgsRes.json();
-        const execsList: Executive[] = execsData.data || [];
+        const rawExecsList: Executive[] = execsData.data || [];
+        const execsList: Executive[] = mergeWithLocalData(rawExecsList);
 
         // Group executives by organizationId
         const execsByOrg: Record<string, Executive[]> = {};
@@ -92,6 +94,13 @@ export default function ReportExportPage() {
       setLoading(false);
     }
   }, [selectedLevel, selectedProvince]);
+
+  // Real-time synchronization across tabs
+  useExecutiveSync(fetchReportData);
+
+  useEffect(() => {
+    fetchReportData();
+  }, [fetchReportData]);
 
   useEffect(() => {
     fetchReportData();

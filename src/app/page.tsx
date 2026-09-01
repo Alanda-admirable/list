@@ -18,7 +18,8 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { STATUS_LABELS } from '@/lib/thai-data';
-import { mergeWithLocalData } from '@/lib/client-sync';
+import { mergeWithLocalData, useExecutiveSync } from '@/lib/client-sync';
+import ExecutiveCardSkeleton from '@/components/ExecutiveCardSkeleton';
 
 export default function DirectoryPage() {
   const [stats, setStats] = useState<any>(null);
@@ -88,15 +89,11 @@ export default function DirectoryPage() {
     fetchStats();
   }, []);
 
-  useEffect(() => {
-    const handleDataChanged = () => {
-      fetchExecutives();
-      fetchStats();
-    };
-
-    window.addEventListener('thaigov_data_changed', handleDataChanged);
-    return () => window.removeEventListener('thaigov_data_changed', handleDataChanged);
-  }, [fetchExecutives]);
+  // Subscribe to real-time updates (cross-tab and within tab)
+  useExecutiveSync(() => {
+    fetchExecutives();
+    fetchStats();
+  });
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -217,9 +214,10 @@ export default function DirectoryPage() {
 
         {/* Results Presentation */}
         {loading ? (
-          <div className="text-center py-16 bg-white rounded-2xl border border-slate-200 shadow-sm space-y-3">
-            <Loader2 className="w-8 h-8 text-blue-600 animate-spin mx-auto" />
-            <p className="text-sm font-semibold text-slate-600">กำลังโหลดข้อมูลทำเนียบผู้บริหาร...</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <ExecutiveCardSkeleton key={i} />
+            ))}
           </div>
         ) : executives.length === 0 ? (
           <div className="text-center py-16 bg-white rounded-2xl border border-slate-200 shadow-sm space-y-4">

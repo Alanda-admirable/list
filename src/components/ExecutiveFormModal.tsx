@@ -24,6 +24,8 @@ import {
   saveExecutiveCreateLocally,
   saveExecutiveDeleteLocally,
 } from '@/lib/client-sync';
+import { processAndCompressImage } from '@/lib/image-processor';
+import { useModalBehavior } from '@/hooks/useModalBehavior';
 
 interface FormModalProps {
   isOpen: boolean;
@@ -46,6 +48,9 @@ export default function ExecutiveFormModal({
   const [orgSearch, setOrgSearch] = useState('');
   const [isOrgDropdownOpen, setIsOrgDropdownOpen] = useState(false);
   const orgDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Modal accessibility hook (ESC key, scroll lock, backdrop click)
+  const { handleBackdropClick } = useModalBehavior({ isOpen, onClose });
 
   const [formData, setFormData] = useState({
     prefix: 'นาย',
@@ -146,12 +151,22 @@ export default function ExecutiveFormModal({
         isTransfer: false,
         transferNotes: '',
       });
-      setOrgSearch('');
+      if (organizations[0]) {
+        setOrgSearch(organizations[0].name);
+      }
     }
-    setError('');
-    setDeleteConfirm(false);
-    setIsOrgDropdownOpen(false);
-  }, [executive, orgList.length, isOpen]);
+  }, [executive, organizations, isOpen]);
+
+  // Click outside to close org dropdown
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (orgDropdownRef.current && !orgDropdownRef.current.contains(e.target as Node)) {
+        setIsOrgDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   if (!isOpen) return null;
 
@@ -177,41 +192,20 @@ export default function ExecutiveFormModal({
     setIsOrgDropdownOpen(false);
   };
 
-  // Process image file to compressed Base64 Data URL
-  const processImageFile = (file: File) => {
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const img = new Image();
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        const MAX_WIDTH = 400;
-        const MAX_HEIGHT = 500;
-        let width = img.width;
-        let height = img.height;
-
-        if (width > height) {
-          if (width > MAX_WIDTH) {
-            height = Math.round((height * MAX_WIDTH) / width);
-            width = MAX_WIDTH;
-          }
-        } else {
-          if (height > MAX_HEIGHT) {
-            width = Math.round((width * MAX_HEIGHT) / height);
-            height = MAX_HEIGHT;
-          }
-        }
-
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext('2d');
-        ctx?.drawImage(img, 0, 0, width, height);
-
-        const base64Url = canvas.toDataURL('image/jpeg', 0.85);
-        setFormData((prev) => ({ ...prev, avatarUrl: base64Url }));
-      };
-      img.src = event.target?.result as string;
-    };
-    reader.readAsDataURL(file);
+  // Safe image processor with transparent PNG alpha channel fix
+  const processImageFile = async (file: File) => {
+    try {
+      setError('');
+      const base64Url = await processAndCompressImage(file, {
+        maxWidth: 400,
+        maxHeight: 500,
+        quality: 0.85,
+        fillColor: '#FFFFFF',
+      });
+      setFormData((prev) => ({ ...prev, avatarUrl: base64Url }));
+    } catch (err: any) {
+      setError(err.message || 'ไม่สามารถประมวลผลรูปภาพได้');
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -282,7 +276,10 @@ export default function ExecutiveFormModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-200">
+    <div
+      onClick={handleBackdropClick}
+      className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-200"
+    >
       <div
         className="relative bg-white rounded-3xl max-w-2xl w-full shadow-2xl overflow-hidden border border-slate-100 transform transition-all"
         onClick={(e) => e.stopPropagation()}

@@ -129,24 +129,26 @@ export interface ExportableExecutive {
   updatedAt?: Date | string | null;
 }
 
+import { sanitizeExcelCell } from './security';
+
 export function exportExecutivesToExcel(executives: ExportableExecutive[]): Buffer {
   const rows = executives.map((e, idx) => ({
     'ลำดับ': idx + 1,
-    'คำนำหน้านาม': e.prefix || '',
-    'ชื่อ': e.firstName || '',
-    'นามสกุล': e.lastName || '',
-    'ตำแหน่ง': e.position || '',
-    'ระดับตำแหน่ง': e.positionLevel || '',
-    'สังกัดหน่วยงาน': e.organization?.name || '',
+    'คำนำหน้านาม': sanitizeExcelCell(e.prefix),
+    'ชื่อ': sanitizeExcelCell(e.firstName),
+    'นามสกุล': sanitizeExcelCell(e.lastName),
+    'ตำแหน่ง': sanitizeExcelCell(e.position),
+    'ระดับตำแหน่ง': sanitizeExcelCell(e.positionLevel),
+    'สังกัดหน่วยงาน': sanitizeExcelCell(e.organization?.name),
     'ระดับการบริหาร': e.organization?.level === 'CENTRAL' ? 'ส่วนราชการ' : e.organization?.level === 'PROVINCIAL' ? 'ส่วนภูมิภาค' : e.organization?.level === 'DISTRICT' ? 'ระดับอำเภอ' : 'ท้องถิ่น',
-    'ประเภทหน่วยงาน': e.organization?.category || '',
-    'จังหวัด': e.organization?.province || '',
-    'อำเภอ': e.organization?.district || '',
+    'ประเภทหน่วยงาน': sanitizeExcelCell(e.organization?.category),
+    'จังหวัด': sanitizeExcelCell(e.organization?.province),
+    'อำเภอ': sanitizeExcelCell(e.organization?.district),
     'สถานะ': e.status === 'ACTIVE' ? 'ปฏิบัติราชการ' : e.status === 'ACTING' ? 'รักษาราชการแทน' : e.status === 'VACANT' ? 'ตำแหน่งว่าง' : 'พ้นตำแหน่ง',
     'วันที่ได้รับการแต่งตั้ง': e.appointmentDate ? new Date(e.appointmentDate).toISOString().split('T')[0] : '',
-    'เลขที่คำสั่งแต่งตั้ง': e.orderReference || '',
-    'เบอร์โทรศัพท์': e.phone || '',
-    'อีเมล': e.email || '',
+    'เลขที่คำสั่งแต่งตั้ง': sanitizeExcelCell(e.orderReference),
+    'เบอร์โทรศัพท์': sanitizeExcelCell(e.phone),
+    'อีเมล': sanitizeExcelCell(e.email),
     'อัปเดตล่าสุด': e.updatedAt ? new Date(e.updatedAt).toLocaleString('th-TH') : '',
   }));
 
@@ -155,6 +157,60 @@ export function exportExecutivesToExcel(executives: ExportableExecutive[]): Buff
   XLSX.utils.book_append_sheet(wb, ws, 'ทำเนียบรายชื่อผู้บริหาร');
 
   return XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
+}
+
+/**
+ * Generates UTF-8 encoded CSV with Thai UTF-8 Byte Order Mark (\\uFEFF)
+ * and formula injection sanitization for Microsoft Excel on Windows.
+ */
+export function exportExecutivesToCsv(executives: ExportableExecutive[]): string {
+  const headers = [
+    'ลำดับ',
+    'คำนำหน้านาม',
+    'ชื่อ',
+    'นามสกุล',
+    'ตำแหน่ง',
+    'ระดับตำแหน่ง',
+    'สังกัดหน่วยงาน',
+    'ระดับการบริหาร',
+    'ประเภทหน่วยงาน',
+    'จังหวัด',
+    'อำเภอ',
+    'สถานะ',
+    'วันที่ได้รับการแต่งตั้ง',
+    'เลขที่คำสั่งแต่งตั้ง',
+    'เบอร์โทรศัพท์',
+    'อีเมล',
+    'อัปเดตล่าสุด',
+  ];
+
+  const lines = executives.map((e, idx) => {
+    const values = [
+      String(idx + 1),
+      sanitizeExcelCell(e.prefix),
+      sanitizeExcelCell(e.firstName),
+      sanitizeExcelCell(e.lastName),
+      sanitizeExcelCell(e.position),
+      sanitizeExcelCell(e.positionLevel),
+      sanitizeExcelCell(e.organization?.name),
+      e.organization?.level === 'CENTRAL' ? 'ส่วนราชการ' : e.organization?.level === 'PROVINCIAL' ? 'ส่วนภูมิภาค' : e.organization?.level === 'DISTRICT' ? 'ระดับอำเภอ' : 'ท้องถิ่น',
+      sanitizeExcelCell(e.organization?.category),
+      sanitizeExcelCell(e.organization?.province),
+      sanitizeExcelCell(e.organization?.district),
+      e.status === 'ACTIVE' ? 'ปฏิบัติราชการ' : e.status === 'ACTING' ? 'รักษาราชการแทน' : e.status === 'VACANT' ? 'ตำแหน่งว่าง' : 'พ้นตำแหน่ง',
+      e.appointmentDate ? new Date(e.appointmentDate).toISOString().split('T')[0] : '',
+      sanitizeExcelCell(e.orderReference),
+      sanitizeExcelCell(e.phone),
+      sanitizeExcelCell(e.email),
+      e.updatedAt ? new Date(e.updatedAt).toLocaleString('th-TH') : '',
+    ];
+
+    // Escape CSV cell with double quotes
+    return values.map((val) => `"${String(val).replace(/"/g, '""')}"`).join(',');
+  });
+
+  // Prefix with 3-byte UTF-8 BOM (\uFEFF) so Excel opens Thai characters seamlessly
+  return `\uFEFF${headers.map((h) => `"${h}"`).join(',')}\n${lines.join('\n')}`;
 }
 
 export function parseExcelBuffer(buffer: Buffer): ExcelExecutiveRow[] {

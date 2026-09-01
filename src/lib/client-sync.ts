@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { Executive } from '@/components/ExecutiveCard';
 
 const STORAGE_KEY_OVERRIDES = 'thaigov_executive_overrides';
@@ -158,3 +159,31 @@ export function mergeWithLocalData(serverExecutives: Executive[]): Executive[] {
 
   return [...newItemsToAdd, ...result];
 }
+
+/**
+ * Custom React Hook that automatically subscribes to executive data changes
+ * both within the current tab (CustomEvent) and across different browser tabs (storage event).
+ */
+export function useExecutiveSync(onSync: () => void) {
+  useEffect(() => {
+    const handleLocalEvent = () => onSync();
+    const handleStorageEvent = (e: StorageEvent) => {
+      if (
+        e.key === STORAGE_KEY_OVERRIDES ||
+        e.key === STORAGE_KEY_CREATED ||
+        e.key === STORAGE_KEY_DELETED
+      ) {
+        onSync();
+      }
+    };
+
+    window.addEventListener('thaigov_data_changed', handleLocalEvent);
+    window.addEventListener('storage', handleStorageEvent);
+
+    return () => {
+      window.removeEventListener('thaigov_data_changed', handleLocalEvent);
+      window.removeEventListener('storage', handleStorageEvent);
+    };
+  }, [onSync]);
+}
+

@@ -18,6 +18,8 @@ import {
 } from 'lucide-react';
 import { Executive } from './ExecutiveCard';
 import { STATUS_LABELS } from '@/lib/thai-data';
+import { useModalBehavior } from '@/hooks/useModalBehavior';
+import { sanitizeSafeUrl } from '@/lib/security';
 
 interface ModalProps {
   executive: Executive | null;
@@ -28,6 +30,12 @@ interface ModalProps {
 export default function ExecutiveModal({ executive, onClose, onAvatarUpdated }: ModalProps) {
   const [avatar, setAvatar] = useState<string | null>(executive?.avatarUrl || null);
   const [uploading, setUploading] = useState(false);
+
+  // Modal accessibility hook (ESC key, scroll lock, backdrop click)
+  const { handleBackdropClick } = useModalBehavior({
+    isOpen: !!executive,
+    onClose,
+  });
 
   useEffect(() => {
     setAvatar(executive?.avatarUrl || null);
@@ -107,7 +115,10 @@ export default function ExecutiveModal({ executive, onClose, onAvatarUpdated }: 
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-200">
+    <div
+      onClick={handleBackdropClick}
+      className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-200"
+    >
       <div
         className="relative bg-white rounded-3xl max-w-2xl w-full shadow-2xl overflow-hidden border border-slate-100 transform transition-all"
         onClick={(e) => e.stopPropagation()}
@@ -323,9 +334,9 @@ export default function ExecutiveModal({ executive, onClose, onAvatarUpdated }: 
                 </div>
               )}
 
-              {executive.organization?.website ? (
+              {sanitizeSafeUrl(executive.organization?.website) ? (
                 <a
-                  href={executive.organization.website}
+                  href={sanitizeSafeUrl(executive.organization.website)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center p-3 rounded-xl border border-slate-200 hover:border-indigo-500 hover:bg-indigo-50/50 transition-all text-slate-800 text-xs"
