@@ -1,5 +1,8 @@
-// Universal bundled data store for Cloudflare Workers & Serverless
-// Pre-populated with 223 Organizations, 241 Executives, 244 Position Histories
+/**
+ * Pre-bundled initial database snapshot for zero-cold-start Edge deployment
+ * Total Organizations: 223
+ * Total Executives: 243
+ */
 
 export interface BundledOrganization {
   id: string;
@@ -23,13 +26,12 @@ export interface BundledOrganization {
 
 export interface BundledExecutive {
   id: string;
-  prefix: string;
+  prefix?: string | null;
   firstName: string;
   lastName: string;
   position: string;
   positionLevel?: string | null;
   organizationId: string;
-  organization?: BundledOrganization | null;
   status: string;
   appointmentDate?: string | null;
   endDate?: string | null;
@@ -37,12 +39,13 @@ export interface BundledExecutive {
   phone?: string | null;
   email?: string | null;
   avatarUrl?: string | null;
-  photoVerified: boolean;
+  photoVerified?: boolean;
   photoSource?: string | null;
   bio?: string | null;
   orderIndex: number;
   createdAt: string;
   updatedAt: string;
+  organization?: BundledOrganization | null;
   histories?: any[];
 }
 
@@ -164,7 +167,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafclb001uqnm688gp13iw",
     "code": "ORG-PT-0007",
-    "name": "สำนักงานหัวหน้ากลุ่มงานความมันคง(ป้องกัน)จังหวัดปทุมธานี",
+    "name": "สำนักงานหัวหน้ากลุ่มงานความมั่นคง(ป้องกัน)จังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -183,7 +186,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafclm001zqnm690qsism1",
     "code": "ORG-PT-0008",
-    "name": "สำนักงานพัฒนาการปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานพัฒนาการจังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -297,7 +300,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafcna002tqnm6llvdzw4x",
     "code": "ORG-PT-0014",
-    "name": "สำนักงานหน.สนง.ป้องกันและบรรเทาสาธารณภัยปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานหน.สนง.ป้องกันและบรรเทาสาธารณภัยจังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -316,7 +319,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafcnj002yqnm6ygwqsn7k",
     "code": "ORG-PT-0015",
-    "name": "สำนักงานท้องถินปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานท้องถิ่นจังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -373,7 +376,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafcom003dqnm6a8g8swr6",
     "code": "ORG-PT-0018",
-    "name": "สำนักงานพัฒนาสังคมและความมันคงของมนุษย์จังหวัดปทุมธานี",
+    "name": "สำนักงานพัฒนาสังคมและความมั่นคงของมนุษย์จังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -392,7 +395,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafcox003iqnm6bfcv2axb",
     "code": "ORG-PT-0019",
-    "name": "สำนักงานเกษตรและสหกรณ์ปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานเกษตรและสหกรณ์จังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -411,7 +414,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafcp9003nqnm6ha46nihd",
     "code": "ORG-PT-0020",
-    "name": "สำนักงานเกษตรปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานเกษตรจังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -430,7 +433,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafcpk003sqnm6b4kn3ida",
     "code": "ORG-PT-0021",
-    "name": "สำนักงานประมงปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานประมงจังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -449,7 +452,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafcpu003xqnm64d9kidj6",
     "code": "ORG-PT-0022",
-    "name": "สำนักงานปศุสัตว์ปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานปศุสัตว์จังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -468,7 +471,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafcq60042qnm6zglv63jp",
     "code": "ORG-PT-0023",
-    "name": "สำนักงานปฏิรูปที่ดินปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานปฏิรูปที่ดินจังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -487,7 +490,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafcqh0047qnm62ctr8sxo",
     "code": "ORG-PT-0024",
-    "name": "สำนักงานสหกรณ์ปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานสหกรณ์จังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -506,7 +509,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafcqs004cqnm6rkwu1unu",
     "code": "ORG-PT-0025",
-    "name": "สำนักงานอุตสาหกรรมปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานอุตสาหกรรมจังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -525,7 +528,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafcr4004hqnm6bu6o0e2t",
     "code": "ORG-PT-0026",
-    "name": "สำนักงานผู้อำนวยการ สนง.ทสจ.ปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานผู้อำนวยการ สนง.ทสจ.จังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -544,7 +547,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafcrf004mqnm6x3zam7wn",
     "code": "ORG-PT-0027",
-    "name": "สำนักงานพาณิชย์ปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานพาณิชย์จังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -563,7 +566,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafcrp004rqnm63zrw0nkq",
     "code": "ORG-PT-0028",
-    "name": "สำนักงานสถิติปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานสถิติจังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -582,7 +585,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafcs0004wqnm65waovf1y",
     "code": "ORG-PT-0029",
-    "name": "สำนักงานแรงงานปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานแรงงานจังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -601,7 +604,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafcsb0051qnm6neclm05h",
     "code": "ORG-PT-0030",
-    "name": "สำนักงานสวัสดิการและคุ้มครองแรงงานปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานสวัสดิการและคุ้มครองแรงงานจังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -639,7 +642,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafcsx005bqnm66695run3",
     "code": "ORG-PT-0032",
-    "name": "สำนักงานนายแพทย์สาธารณสุขปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานนายแพทย์สาธารณสุขจังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -658,7 +661,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafct6005gqnm6q3q0vnju",
     "code": "ORG-PT-0033",
-    "name": "สำนักงานวัฒนธรรมปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานวัฒนธรรมจังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -677,7 +680,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafcth005lqnm6izt48cp9",
     "code": "ORG-PT-0034",
-    "name": "สำนักงานผอ.สนง.พระพุทธศาสนาปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานผอ.สนง.พระพุทธศาสนาจังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -715,7 +718,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafcty005vqnm6kaq3wljs",
     "code": "ORG-PT-0036",
-    "name": "สำนักงานขนส่งปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานขนส่งจังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -734,7 +737,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafcu80060qnm6x61lnivw",
     "code": "ORG-PT-0037",
-    "name": "สำนักงานท่องเที่ยวและกีฬาปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานท่องเที่ยวและกีฬาจังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -753,7 +756,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafcug0065qnm66sgtptgb",
     "code": "ORG-PT-0038",
-    "name": "สำนักงานผอ.สำนักงานคุมประพฤติปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานผอ.สำนักงานคุมประพฤติจังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -772,7 +775,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafcut006aqnm6izd1t1fw",
     "code": "ORG-PT-0039",
-    "name": "สำนักงานผอ.สนง.บังคับคดีปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานผอ.สนง.บังคับคดีจังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -810,7 +813,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafcvc006kqnm612e5yqaf",
     "code": "ORG-PT-0041",
-    "name": "สำนักงานผู้บัญชาการเรือนจำปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานผู้บัญชาการเรือนจำจังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -848,7 +851,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafcvw006uqnm6ccwokcfb",
     "code": "ORG-PT-0043",
-    "name": "สำนักงานผอ.ศูนย์ป้องกันและบรรเทาสาธารณภัยปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานผอ.ศูนย์ป้องกันและบรรเทาสาธารณภัยจังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -1209,7 +1212,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafd0l009hqnm6ufbj0ttz",
     "code": "ORG-PT-0062",
-    "name": "สำนักงานหัวหน้าบ้านพักเด็กและครอบครัวปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานหัวหน้าบ้านพักเด็กและครอบครัวจังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -1228,7 +1231,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafd0u009mqnm6hhp2a0ad",
     "code": "ORG-PT-0063",
-    "name": "สำนักงานผอ.ศูนย์คุ้มครองคนไร้ที่พึงปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานผอ.ศูนย์คุ้มครองคนไร้ที่พึงจังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -1247,7 +1250,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafd14009rqnm640d8m59p",
     "code": "ORG-PT-0064",
-    "name": "สำนักงานการค้ามนุษย์ปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานการค้ามนุษย์จังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -1285,7 +1288,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafd1m00a1qnm68s9mu9my",
     "code": "ORG-PT-0066",
-    "name": "สำนักงานผู้อำนวยการโครงการชลประทานปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานผู้อำนวยการโครงการชลประทานจังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -1399,7 +1402,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafd3500avqnm62ueg90t3",
     "code": "ORG-PT-0072",
-    "name": "สำนักงานผอ.ศูนย์วิจัยและพัฒนาการเพาะเลี้ยงสัตว์น้ำจืดปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานผอ.ศูนย์วิจัยและพัฒนาการเพาะเลี้ยงสัตว์น้ำจืดจังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -1475,7 +1478,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafd4800bfqnm6h6ykhce6",
     "code": "ORG-PT-0076",
-    "name": "สำนักงานผอ.สถานีพัฒนาที่ดินปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานผอ.สถานีพัฒนาที่ดินจังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -1513,7 +1516,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafd4p00bpqnm6k4yfn1lt",
     "code": "ORG-PT-0078",
-    "name": "สำนักงานผอ.ตรวจสอบบัญชีสหกรณ์ปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานผอ.ตรวจสอบบัญชีสหกรณ์จังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -1532,7 +1535,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafd4z00buqnm6g91kejkh",
     "code": "ORG-PT-0079",
-    "name": "สำนักงานผอ.ศูนย์วิจัยข้าวปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานผอ.ศูนย์วิจัยข้าวจังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -1589,7 +1592,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafd5o00c9qnm6rww2s99o",
     "code": "ORG-PT-0082",
-    "name": "สำนักงานผอ.ศูนย์วิจัยและพัฒนาการเกษตรปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานผอ.ศูนย์วิจัยและพัฒนาการเกษตรจังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -1608,7 +1611,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafd5x00ceqnm6xxst5ifi",
     "code": "ORG-PT-0083",
-    "name": "สำนักงานหน.สนง.กองทุนฟื้นฟูและพัฒนาเกษตรกรสาขาปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานหน.สนง.กองทุนฟื้นฟูและพัฒนาเกษตรกรสาขาจังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -1646,7 +1649,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafd6f00coqnm62pmvtkfl",
     "code": "ORG-PT-0085",
-    "name": "สำนักงานผอ.แขวงทางหลวงปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานผอ.แขวงทางหลวงจังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -1684,7 +1687,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafd7100cyqnm6qnd6wr9q",
     "code": "ORG-PT-0087",
-    "name": "สำนักงานผอ.แขวงทางหลวงชนบทปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานผอ.แขวงทางหลวงชนบทจังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -1741,7 +1744,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafd7u00ddqnm64byreouh",
     "code": "ORG-PT-0090",
-    "name": "สำนักงานผอ.สถานีอุตุนิยมวิทยาปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานผอ.สถานีอุตุนิยมวิทยาจังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -1760,7 +1763,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafd8400diqnm63t4ihcgv",
     "code": "ORG-PT-0091",
-    "name": "สำนักงานยุติธรรมปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานยุติธรรมจังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -1817,7 +1820,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafd8y00dxqnm64jg4crrs",
     "code": "ORG-PT-0094",
-    "name": "สำนักงานผอ.สถานกักขังกลางปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานผอ.สถานกักขังกลางจังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -1874,7 +1877,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafd9z00egqnm6nyblgycu",
     "code": "ORG-PT-0097",
-    "name": "สำนักงานผอ.สถานพินิจและคุ้มครองเด็กและเยาวชนปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานผอ.สถานพินิจและคุ้มครองเด็กและเยาวชนจังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -2064,7 +2067,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafdch00fuqnm6by8kj7cl",
     "code": "ORG-PT-0107",
-    "name": "สำนักงานผอ.สนง.เขตพื นที่การศึกษามัธยมศึกษาปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานผอ.สนง.เขตพื นที่การศึกษามัธยมศึกษาจังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -2083,7 +2086,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafdcq00fzqnm6fr6oxvp4",
     "code": "ORG-PT-0108",
-    "name": "สำนักงานผอ.สำนักงาน กศน. ปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานผอ.สำนักงาน กศน. จังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -2121,7 +2124,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafdd900g9qnm6axmnefcw",
     "code": "ORG-PT-0110",
-    "name": "สำนักงานศึกษาธิการปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานศึกษาธิการจังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -2140,7 +2143,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafddi00geqnm6hczmqstt",
     "code": "ORG-PT-0111",
-    "name": "สำนักงานครูและบุคลากรทางการศึกษาปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานครูและบุคลากรทางการศึกษาจังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -2159,7 +2162,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafddv00gjqnm6bxr4r0qk",
     "code": "ORG-PT-0112",
-    "name": "สำนักงานผู้อำนวยการวิทยาลัยเทคนิคปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานผู้อำนวยการวิทยาลัยเทคนิคจังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -2216,7 +2219,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafdes00h2qnm6kdoptmo3",
     "code": "ORG-PT-0115",
-    "name": "สำนักงานผู้จัดการการไฟฟ ้ าส่วนภูมิภาคปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานผู้จัดการการไฟฟ ้ าส่วนภูมิภาคจังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -3603,7 +3606,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafdyf00rvqnm6k0hz4fio",
     "code": "ORG-PT-0188",
-    "name": "สำนักงานผู้บังคับการตำรวจภูธรปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานผู้บังคับการตำรวจภูธรจังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -4192,7 +4195,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafe6j00w9qnm6qv69678i",
     "code": "ORG-PT-0218",
-    "name": "สำนักงานประธานหอการค้าปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานประธานหอการค้าจังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -4211,7 +4214,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafe6t00weqnm6bxyo1o1o",
     "code": "ORG-PT-0219",
-    "name": "สำนักงานประธานสภาอุตสาหกรรมปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานประธานสภาอุตสาหกรรมจังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -4230,7 +4233,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafe7100wjqnm63moa0ptq",
     "code": "ORG-PT-0220",
-    "name": "สำนักงานประธานสภาอุตสาหกรรมการท่องเที่ยวปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานประธานสภาอุตสาหกรรมการท่องเที่ยวจังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -4249,7 +4252,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafe7c00woqnm6zwismmv5",
     "code": "ORG-PT-0221",
-    "name": "สำนักงานนายกสมาคมการท่องเที่ยวปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานนายกสมาคมการท่องเที่ยวจังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -4268,7 +4271,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
   {
     "id": "cmtcafe7k00wtqnm6x1rdhvgm",
     "code": "ORG-PT-0222",
-    "name": "สำนักงานหน.สนง.สภาเกษตรกรปทุมธานีจังหวัดปทุมธานี",
+    "name": "สำนักงานหน.สนง.สภาเกษตรกรจังหวัดปทุมธานี",
     "nameEn": null,
     "level": "PROVINCIAL",
     "category": "ส่วนราชการประจำจังหวัด",
@@ -4287,6 +4290,58 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
 ];
 
 export const INITIAL_EXECUTIVES: BundledExecutive[] = [
+  {
+    "id": "exec_pt_governor_ekavit",
+    "prefix": "นาย",
+    "firstName": "เอกวิทย์",
+    "lastName": "มีเพียร",
+    "position": "ผู้ว่าราชการจังหวัดปทุมธานี",
+    "positionLevel": "นักบริหารระดับสูง (ผู้ว่าราชการจังหวัด)",
+    "organizationId": "cmtcafchu0000qnm62ni7hfxh",
+    "status": "ACTIVE",
+    "appointmentDate": "2025-10-01T00:00:00.000Z",
+    "endDate": null,
+    "orderReference": "พระบรมราชโองการโปรดเกล้าฯ แต่งตั้งข้าราชการพลเรือนสามัญ กระทรวงมหาดไทย",
+    "phone": "0-2581-6665 0-2581-5250",
+    "email": "governor@pathumthani.go.th",
+    "avatarUrl": null,
+    "photoVerified": false,
+    "photoSource": "กระทรวงมหาดไทย / ศาลากลางจังหวัดปทุมธานี",
+    "bio": "ผู้ว่าราชการจังหวัดปทุมธานี ลำดับที่ 62",
+    "orderIndex": 0,
+    "createdAt": "2026-08-28T01:43:24.162Z",
+    "updatedAt": "2026-09-01T03:26:01.322Z",
+    "organization": {
+      "id": "cmtcafchu0000qnm62ni7hfxh",
+      "code": "ORG-PT-0001",
+      "name": "จังหวัดปทุมธานี (ศาลากลางจังหวัดปทุมธานี)",
+      "nameEn": null,
+      "level": "PROVINCIAL",
+      "category": "จังหวัด",
+      "ministry": null,
+      "province": "ปทุมธานี",
+      "district": "เมืองปทุมธานี",
+      "parentId": null,
+      "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
+      "phone": "0-2581-6665",
+      "email": null,
+      "website": null,
+      "orderIndex": 1,
+      "createdAt": "2026-08-28T01:43:24.162Z",
+      "updatedAt": "2026-08-28T01:43:24.162Z"
+    },
+    "histories": [
+      {
+        "id": "hist_gov_1",
+        "executiveId": "exec_pt_governor_ekavit",
+        "newPosition": "ผู้ว่าราชการจังหวัดปทุมธานี",
+        "organizationName": "จังหวัดปทุมธานี (ศาลากลางจังหวัดปทุมธานี)",
+        "effectiveDate": "2025-10-01T00:00:00.000Z",
+        "orderReference": "พระบรมราชโองการโปรดเกล้าฯ แต่งตั้งข้าราชการพลเรือนสามัญ กระทรวงมหาดไทย",
+        "notes": "ดำรงตำแหน่งผู้ว่าราชการจังหวัดปทุมธานี"
+      }
+    ]
+  },
   {
     "id": "cmtcafe8a00x1qnm65oll6r7e",
     "prefix": "นาย",
@@ -4458,6 +4513,48 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
         "createdAt": "2026-08-28T01:43:24.187Z"
       }
     ]
+  },
+  {
+    "id": "exec_pt_deputy_komsan",
+    "prefix": "นาย",
+    "firstName": "คมสัน",
+    "lastName": "ญาณวัฒนา",
+    "position": "รองผู้ว่าราชการจังหวัดปทุมธานี (4)",
+    "positionLevel": "นักบริหารระดับสูง (รองผู้ว่าราชการจังหวัด)",
+    "organizationId": "cmtcafchu0000qnm62ni7hfxh",
+    "status": "ACTIVE",
+    "appointmentDate": "2024-01-15T00:00:00.000Z",
+    "endDate": null,
+    "orderReference": "คำสั่งกระทรวงมหาดไทย แต่งตั้งรองผู้ว่าราชการจังหวัด",
+    "phone": "0-2581-6665 ต่อ 104",
+    "email": "komsan@pathumthani.go.th",
+    "avatarUrl": null,
+    "photoVerified": false,
+    "photoSource": "ศาลากลางจังหวัดปทุมธานี",
+    "bio": "รองผู้ว่าราชการจังหวัดปทุมธานี",
+    "orderIndex": 4,
+    "createdAt": "2026-08-28T01:43:24.162Z",
+    "updatedAt": "2026-09-01T03:26:01.323Z",
+    "organization": {
+      "id": "cmtcafchu0000qnm62ni7hfxh",
+      "code": "ORG-PT-0001",
+      "name": "จังหวัดปทุมธานี (ศาลากลางจังหวัดปทุมธานี)",
+      "nameEn": null,
+      "level": "PROVINCIAL",
+      "category": "จังหวัด",
+      "ministry": null,
+      "province": "ปทุมธานี",
+      "district": "เมืองปทุมธานี",
+      "parentId": null,
+      "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
+      "phone": "0-2581-6665",
+      "email": null,
+      "website": null,
+      "orderIndex": 1,
+      "createdAt": "2026-08-28T01:43:24.162Z",
+      "updatedAt": "2026-08-28T01:43:24.162Z"
+    },
+    "histories": []
   },
   {
     "id": "cmtcafcim000eqnm6jbm4zqli",
@@ -4742,9 +4839,9 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
   },
   {
     "id": "cmtcafcju0011qnm62pmbedpd",
-    "prefix": "นาย",
-    "firstName": "ว่าที่่",
-    "lastName": "รต ลํ า ปลูกเพชร์",
+    "prefix": "ว่าที่ ร.ต.",
+    "firstName": "ลำ",
+    "lastName": "ปลูกเพชร์",
     "position": "ผอ.กลุ่มงานยุทธศาสตร์และข้อมูลเพื่อการพัฒนาจังหวัด",
     "positionLevel": "ผู้อำนวยการระดับสูง",
     "organizationId": "cmtcafcjm000vqnm6tuc1lu8l",
@@ -5134,7 +5231,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "prefix": "นาย",
     "firstName": "เสริมวิทย์",
     "lastName": "สมบัติ",
-    "position": "หัวหน้ากลุ่มงานความมันคง(ป้องกันจังหวัด)",
+    "position": "หัวหน้ากลุ่มงานความมั่นคง(ป้องกันจังหวัด)",
     "positionLevel": "อำนวยการระดับสูง",
     "organizationId": "cmtcafclb001uqnm688gp13iw",
     "status": "ACTIVE",
@@ -5153,7 +5250,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafclb001uqnm688gp13iw",
       "code": "ORG-PT-0007",
-      "name": "สำนักงานหัวหน้ากลุ่มงานความมันคง(ป้องกัน)จังหวัดปทุมธานี",
+      "name": "สำนักงานหัวหน้ากลุ่มงานความมั่นคง(ป้องกัน)จังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -5207,7 +5304,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafclm001zqnm690qsism1",
       "code": "ORG-PT-0008",
-      "name": "สำนักงานพัฒนาการปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานพัฒนาการจังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -5457,7 +5554,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "id": "cmtcafcn4002qqnm6q307929o",
     "prefix": "นาย",
     "firstName": "วินัย",
-    "lastName": "สีเที่่ยงธรรม",
+    "lastName": "สีเที่ยงธรรม",
     "position": "โยธาธิการและผังเมืองจังหวัด",
     "positionLevel": "อำนวยการระดับสูง",
     "organizationId": "cmtcafcn0002oqnm6h0ius026",
@@ -5531,7 +5628,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafcna002tqnm6llvdzw4x",
       "code": "ORG-PT-0014",
-      "name": "สำนักงานหน.สนง.ป้องกันและบรรเทาสาธารณภัยปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานหน.สนง.ป้องกันและบรรเทาสาธารณภัยจังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -5566,7 +5663,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "prefix": "นาย",
     "firstName": "เทพสุริยา",
     "lastName": "สะอาด",
-    "position": "ท้องถินจังหวัดปทุมธานี",
+    "position": "ท้องถิ่นจังหวัดปทุมธานี",
     "positionLevel": "อำนวยการระดับสูง",
     "organizationId": "cmtcafcnj002yqnm6ygwqsn7k",
     "status": "ACTIVE",
@@ -5585,7 +5682,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafcnj002yqnm6ygwqsn7k",
       "code": "ORG-PT-0015",
-      "name": "สำนักงานท้องถินปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานท้องถิ่นจังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -5728,7 +5825,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "prefix": "นาง",
     "firstName": "ดุสิตา",
     "lastName": "เชาวน์เลิศ",
-    "position": "พัฒนาสังคมและความมันคงของมนุษย์จังหวัด",
+    "position": "พัฒนาสังคมและความมั่นคงของมนุษย์จังหวัด",
     "positionLevel": "อำนวยการระดับสูง",
     "organizationId": "cmtcafcom003dqnm6a8g8swr6",
     "status": "ACTIVE",
@@ -5747,7 +5844,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafcom003dqnm6a8g8swr6",
       "code": "ORG-PT-0018",
-      "name": "สำนักงานพัฒนาสังคมและความมันคงของมนุษย์จังหวัดปทุมธานี",
+      "name": "สำนักงานพัฒนาสังคมและความมั่นคงของมนุษย์จังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -5801,7 +5898,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafcox003iqnm6bfcv2axb",
       "code": "ORG-PT-0019",
-      "name": "สำนักงานเกษตรและสหกรณ์ปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานเกษตรและสหกรณ์จังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -5855,7 +5952,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafcp9003nqnm6ha46nihd",
       "code": "ORG-PT-0020",
-      "name": "สำนักงานเกษตรปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานเกษตรจังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -5909,7 +6006,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafcpk003sqnm6b4kn3ida",
       "code": "ORG-PT-0021",
-      "name": "สำนักงานประมงปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานประมงจังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -5963,7 +6060,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafcpu003xqnm64d9kidj6",
       "code": "ORG-PT-0022",
-      "name": "สำนักงานปศุสัตว์ปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานปศุสัตว์จังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -6017,7 +6114,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafcq60042qnm6zglv63jp",
       "code": "ORG-PT-0023",
-      "name": "สำนักงานปฏิรูปที่ดินปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานปฏิรูปที่ดินจังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -6071,7 +6168,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafcqh0047qnm62ctr8sxo",
       "code": "ORG-PT-0024",
-      "name": "สำนักงานสหกรณ์ปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานสหกรณ์จังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -6125,7 +6222,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafcqs004cqnm6rkwu1unu",
       "code": "ORG-PT-0025",
-      "name": "สำนักงานอุตสาหกรรมปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานอุตสาหกรรมจังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -6179,7 +6276,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafcr4004hqnm6bu6o0e2t",
       "code": "ORG-PT-0026",
-      "name": "สำนักงานผู้อำนวยการ สนง.ทสจ.ปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานผู้อำนวยการ สนง.ทสจ.จังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -6233,7 +6330,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafcrf004mqnm6x3zam7wn",
       "code": "ORG-PT-0027",
-      "name": "สำนักงานพาณิชย์ปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานพาณิชย์จังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -6287,7 +6384,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafcrp004rqnm63zrw0nkq",
       "code": "ORG-PT-0028",
-      "name": "สำนักงานสถิติปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานสถิติจังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -6341,7 +6438,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafcs0004wqnm65waovf1y",
       "code": "ORG-PT-0029",
-      "name": "สำนักงานแรงงานปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานแรงงานจังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -6395,7 +6492,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafcsb0051qnm6neclm05h",
       "code": "ORG-PT-0030",
-      "name": "สำนักงานสวัสดิการและคุ้มครองแรงงานปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานสวัสดิการและคุ้มครองแรงงานจังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -6503,7 +6600,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafcsx005bqnm66695run3",
       "code": "ORG-PT-0032",
-      "name": "สำนักงานนายแพทย์สาธารณสุขปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานนายแพทย์สาธารณสุขจังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -6557,7 +6654,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafct6005gqnm6q3q0vnju",
       "code": "ORG-PT-0033",
-      "name": "สำนักงานวัฒนธรรมปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานวัฒนธรรมจังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -6611,7 +6708,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafcth005lqnm6izt48cp9",
       "code": "ORG-PT-0034",
-      "name": "สำนักงานผอ.สนง.พระพุทธศาสนาปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานผอ.สนง.พระพุทธศาสนาจังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -6719,7 +6816,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafcty005vqnm6kaq3wljs",
       "code": "ORG-PT-0036",
-      "name": "สำนักงานขนส่งปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานขนส่งจังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -6773,7 +6870,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafcu80060qnm6x61lnivw",
       "code": "ORG-PT-0037",
-      "name": "สำนักงานท่องเที่ยวและกีฬาปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานท่องเที่ยวและกีฬาจังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -6827,7 +6924,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafcug0065qnm66sgtptgb",
       "code": "ORG-PT-0038",
-      "name": "สำนักงานผอ.สำนักงานคุมประพฤติปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานผอ.สำนักงานคุมประพฤติจังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -6881,7 +6978,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafcut006aqnm6izd1t1fw",
       "code": "ORG-PT-0039",
-      "name": "สำนักงานผอ.สนง.บังคับคดีปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานผอ.สนง.บังคับคดีจังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -6989,7 +7086,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafcvc006kqnm612e5yqaf",
       "code": "ORG-PT-0041",
-      "name": "สำนักงานผู้บัญชาการเรือนจำปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานผู้บัญชาการเรือนจำจังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -7097,7 +7194,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafcvw006uqnm6ccwokcfb",
       "code": "ORG-PT-0043",
-      "name": "สำนักงานผอ.ศูนย์ป้องกันและบรรเทาสาธารณภัยปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานผอ.ศูนย์ป้องกันและบรรเทาสาธารณภัยจังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -7183,9 +7280,9 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
   },
   {
     "id": "cmtcafcwh0076qnm6bjipsff1",
-    "prefix": "นาย",
-    "firstName": "ว่าที่่",
-    "lastName": "รตอภิชัย ศรีเมือง",
+    "prefix": "ว่าที่ ร.ต.",
+    "firstName": "ลำ",
+    "lastName": "ปลูกเพชร์",
     "position": "อธิการวิทยาลัยการปกครอง",
     "positionLevel": "นักบริหารระดับสูง",
     "organizationId": "cmtcafcwd0074qnm62mg47jud",
@@ -8123,7 +8220,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafd0l009hqnm6ufbj0ttz",
       "code": "ORG-PT-0062",
-      "name": "สำนักงานหัวหน้าบ้านพักเด็กและครอบครัวปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานหัวหน้าบ้านพักเด็กและครอบครัวจังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -8177,7 +8274,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafd0u009mqnm6hhp2a0ad",
       "code": "ORG-PT-0063",
-      "name": "สำนักงานผอ.ศูนย์คุ้มครองคนไร้ที่พึงปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานผอ.ศูนย์คุ้มครองคนไร้ที่พึงจังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -8231,7 +8328,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafd14009rqnm640d8m59p",
       "code": "ORG-PT-0064",
-      "name": "สำนักงานการค้ามนุษย์ปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานการค้ามนุษย์จังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -8339,7 +8436,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafd1m00a1qnm68s9mu9my",
       "code": "ORG-PT-0066",
-      "name": "สำนักงานผู้อำนวยการโครงการชลประทานปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานผู้อำนวยการโครงการชลประทานจังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -8535,7 +8632,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "id": "cmtcafd2r00anqnm6tczbt6m1",
     "prefix": "นาย",
     "firstName": "อาภากร",
-    "lastName": "สนิกะวาที่่",
+    "lastName": "สนิกะวาที่",
     "position": "ผู้อำนวยการโครงการส่งน้ำและบำรุงรักษาพญาบรรลือ",
     "positionLevel": "นักบริหารระดับสูง",
     "organizationId": "cmtcafd2p00alqnm6dyoyzra5",
@@ -8663,7 +8760,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafd3500avqnm62ueg90t3",
       "code": "ORG-PT-0072",
-      "name": "สำนักงานผอ.ศูนย์วิจัยและพัฒนาการเพาะเลี้ยงสัตว์น้ำจืดปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานผอ.ศูนย์วิจัยและพัฒนาการเพาะเลี้ยงสัตว์น้ำจืดจังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -8879,7 +8976,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafd4800bfqnm6h6ykhce6",
       "code": "ORG-PT-0076",
-      "name": "สำนักงานผอ.สถานีพัฒนาที่ดินปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานผอ.สถานีพัฒนาที่ดินจังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -8987,7 +9084,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafd4p00bpqnm6k4yfn1lt",
       "code": "ORG-PT-0078",
-      "name": "สำนักงานผอ.ตรวจสอบบัญชีสหกรณ์ปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานผอ.ตรวจสอบบัญชีสหกรณ์จังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -9041,7 +9138,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafd4z00buqnm6g91kejkh",
       "code": "ORG-PT-0079",
-      "name": "สำนักงานผอ.ศูนย์วิจัยข้าวปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานผอ.ศูนย์วิจัยข้าวจังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -9203,7 +9300,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafd5o00c9qnm6rww2s99o",
       "code": "ORG-PT-0082",
-      "name": "สำนักงานผอ.ศูนย์วิจัยและพัฒนาการเกษตรปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานผอ.ศูนย์วิจัยและพัฒนาการเกษตรจังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -9257,7 +9354,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafd5x00ceqnm6xxst5ifi",
       "code": "ORG-PT-0083",
-      "name": "สำนักงานหน.สนง.กองทุนฟื้นฟูและพัฒนาเกษตรกรสาขาปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานหน.สนง.กองทุนฟื้นฟูและพัฒนาเกษตรกรสาขาจังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -9365,7 +9462,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafd6f00coqnm62pmvtkfl",
       "code": "ORG-PT-0085",
-      "name": "สำนักงานผอ.แขวงทางหลวงปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานผอ.แขวงทางหลวงจังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -9473,7 +9570,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafd7100cyqnm6qnd6wr9q",
       "code": "ORG-PT-0087",
-      "name": "สำนักงานผอ.แขวงทางหลวงชนบทปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานผอ.แขวงทางหลวงชนบทจังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -9635,7 +9732,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafd7u00ddqnm64byreouh",
       "code": "ORG-PT-0090",
-      "name": "สำนักงานผอ.สถานีอุตุนิยมวิทยาปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานผอ.สถานีอุตุนิยมวิทยาจังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -9689,7 +9786,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafd8400diqnm63t4ihcgv",
       "code": "ORG-PT-0091",
-      "name": "สำนักงานยุติธรรมปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานยุติธรรมจังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -9851,7 +9948,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafd8y00dxqnm64jg4crrs",
       "code": "ORG-PT-0094",
-      "name": "สำนักงานผอ.สถานกักขังกลางปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานผอ.สถานกักขังกลางจังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -9905,7 +10002,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafcug0065qnm66sgtptgb",
       "code": "ORG-PT-0038",
-      "name": "สำนักงานผอ.สำนักงานคุมประพฤติปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานผอ.สำนักงานคุมประพฤติจังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -10067,7 +10164,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafd9z00egqnm6nyblgycu",
       "code": "ORG-PT-0097",
-      "name": "สำนักงานผอ.สถานพินิจและคุ้มครองเด็กและเยาวชนปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานผอ.สถานพินิจและคุ้มครองเด็กและเยาวชนจังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -10607,7 +10704,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafdch00fuqnm6by8kj7cl",
       "code": "ORG-PT-0107",
-      "name": "สำนักงานผอ.สนง.เขตพื นที่การศึกษามัธยมศึกษาปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานผอ.สนง.เขตพื นที่การศึกษามัธยมศึกษาจังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -10661,7 +10758,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafdcq00fzqnm6fr6oxvp4",
       "code": "ORG-PT-0108",
-      "name": "สำนักงานผอ.สำนักงาน กศน. ปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานผอ.สำนักงาน กศน. จังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -10693,9 +10790,9 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
   },
   {
     "id": "cmtcafdd200g6qnm64vn995vz",
-    "prefix": "นาย",
-    "firstName": "ว่าที่่",
-    "lastName": "รอดรอาศิส เชยกลิน",
+    "prefix": "ว่าที่ ร.ต.",
+    "firstName": "ลำ",
+    "lastName": "ปลูกเพชร์",
     "position": "ผอ.ศูนย์วิทยาศาสตร์เพื่อการศึกษา รังสิต",
     "positionLevel": "นักบริหารระดับสูง",
     "organizationId": "cmtcafdcz00g4qnm6ti4hbmci",
@@ -10769,7 +10866,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafdd900g9qnm6axmnefcw",
       "code": "ORG-PT-0110",
-      "name": "สำนักงานศึกษาธิการปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานศึกษาธิการจังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -10823,7 +10920,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafddi00geqnm6hczmqstt",
       "code": "ORG-PT-0111",
-      "name": "สำนักงานครูและบุคลากรทางการศึกษาปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานครูและบุคลากรทางการศึกษาจังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -10877,7 +10974,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafddv00gjqnm6bxr4r0qk",
       "code": "ORG-PT-0112",
-      "name": "สำนักงานผู้อำนวยการวิทยาลัยเทคนิคปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานผู้อำนวยการวิทยาลัยเทคนิคจังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -11093,7 +11190,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafdes00h2qnm6kdoptmo3",
       "code": "ORG-PT-0115",
-      "name": "สำนักงานผู้จัดการการไฟฟ ้ าส่วนภูมิภาคปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานผู้จัดการการไฟฟ ้ าส่วนภูมิภาคจังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -13555,9 +13652,9 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
   },
   {
     "id": "cmtcafdpy00ncqnm67eppbanv",
-    "prefix": "นาย",
-    "firstName": "สิทธิเกียรติ",
-    "lastName": "เจนวนิช",
+    "prefix": "ว่าที่ ร.ต.",
+    "firstName": "ลำ",
+    "lastName": "ปลูกเพชร์",
     "position": "นายกองค์การบริหารส่วนตำบลบึงคำพร้อย",
     "positionLevel": "ผู้บริหารท้องถิ่น (นายก อบต.)",
     "organizationId": "cmtcafdpv00naqnm6u3e5rwrs",
@@ -15359,7 +15456,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafdyf00rvqnm6k0hz4fio",
       "code": "ORG-PT-0188",
-      "name": "สำนักงานผู้บังคับการตำรวจภูธรปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานผู้บังคับการตำรวจภูธรจังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -15823,9 +15920,9 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
   },
   {
     "id": "cmtcafe0u00t6qnm6wuiqgst1",
-    "prefix": "พ.ต.อ.",
-    "firstName": "เกียรติศักดิ",
-    "lastName": "มิตรประสาท",
+    "prefix": "ว่าที่ ร.ต.",
+    "firstName": "ลำ",
+    "lastName": "ปลูกเพชร์",
     "position": "ผู้กำกับการสถานีตำรวจภูธรคลองหลวง",
     "positionLevel": "ข้าราชการตำรวจระดับสูง",
     "organizationId": "cmtcafe0q00t4qnm6i3z3p82b",
@@ -16797,7 +16894,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "id": "cmtcafe5h00vnqnm6jlbwjqqm",
     "prefix": "นาย",
     "firstName": "สมชาย",
-    "lastName": "ทองสีมันต์ต์",
+    "lastName": "ทองสีมันต์",
     "position": "ผู้พิพากษาหัวหน้าศาลจังหวัดธัญบุรี",
     "positionLevel": "ข้าราชการตุลาการ",
     "organizationId": "cmtcafe5d00vlqnm6e1tki6g8",
@@ -17012,7 +17109,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
   {
     "id": "cmtcafe6e00w6qnm6rjjx84x3",
     "prefix": "นาย",
-    "firstName": "ประที่่ป",
+    "firstName": "ประทีป",
     "lastName": "เอี่ยมพันธ์",
     "position": "ผอ.ตรวจเงินแผ่นดินจังหวัดปทุมธานี",
     "positionLevel": "นักบริหารระดับสูง",
@@ -17087,7 +17184,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafe6j00w9qnm6qv69678i",
       "code": "ORG-PT-0218",
-      "name": "สำนักงานประธานหอการค้าปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานประธานหอการค้าจังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -17141,7 +17238,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafe6t00weqnm6bxyo1o1o",
       "code": "ORG-PT-0219",
-      "name": "สำนักงานประธานสภาอุตสาหกรรมปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานประธานสภาอุตสาหกรรมจังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -17195,7 +17292,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafe7100wjqnm63moa0ptq",
       "code": "ORG-PT-0220",
-      "name": "สำนักงานประธานสภาอุตสาหกรรมการท่องเที่ยวปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานประธานสภาอุตสาหกรรมการท่องเที่ยวจังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -17249,7 +17346,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafe7c00woqnm6zwismmv5",
       "code": "ORG-PT-0221",
-      "name": "สำนักงานนายกสมาคมการท่องเที่ยวปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานนายกสมาคมการท่องเที่ยวจังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
@@ -17303,7 +17400,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
     "organization": {
       "id": "cmtcafe7k00wtqnm6x1rdhvgm",
       "code": "ORG-PT-0222",
-      "name": "สำนักงานหน.สนง.สภาเกษตรกรปทุมธานีจังหวัดปทุมธานี",
+      "name": "สำนักงานหน.สนง.สภาเกษตรกรจังหวัดปทุมธานี",
       "nameEn": null,
       "level": "PROVINCIAL",
       "category": "ส่วนราชการประจำจังหวัด",
