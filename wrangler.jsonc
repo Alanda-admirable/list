@@ -10,5 +10,9 @@
   },
   "build": {
     "command": "npx opennextjs-cloudflare build"
+  },
+  "vars": {
+    "NEXT_PUBLIC_SUPABASE_URL": "https://lygsmthmtaqchldoiovu.supabase.co",
+    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx5Z3NtdGhtdGFxY2hsZG9pb3Z1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgyMjkzODMsImV4cCI6MjEwMzgwNTM4M30.XgTtKbn4nl_EYVD-x6QQiwrznnh3VNl8ESkafIdBd60"
   }
 }
