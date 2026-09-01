@@ -216,7 +216,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
     "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
     "phone": "0-2581-6301",
     "email": null,
-    "website": null,
+    "website": "http://nam.dol.go.th/pathumthani",
     "orderIndex": 9,
     "createdAt": "2026-08-28T01:43:24.309Z",
     "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -311,7 +311,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
     "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
     "phone": "0-2581-7120",
     "email": null,
-    "website": null,
+    "website": "https://pathumthani.disaster.go.th/",
     "orderIndex": 14,
     "createdAt": "2026-08-28T01:43:24.359Z",
     "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -349,7 +349,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
     "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
     "phone": "0-2581-2121",
     "email": null,
-    "website": null,
+    "website": "http://pr.prd.go.th/pathumthani/",
     "orderIndex": 16,
     "createdAt": "2026-08-28T01:43:24.381Z",
     "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -368,7 +368,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
     "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
     "phone": "0-2581-6305",
     "email": null,
-    "website": null,
+    "website": "http://cgd.pathumthanipoc.com/main/",
     "orderIndex": 17,
     "createdAt": "2026-08-28T01:43:24.395Z",
     "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -387,7 +387,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
     "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
     "phone": "0-2581-6043",
     "email": null,
-    "website": null,
+    "website": "https://pathumthani.m-society.go.th/",
     "orderIndex": 18,
     "createdAt": "2026-08-28T01:43:24.406Z",
     "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -406,7 +406,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
     "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
     "phone": "0-2593-4351",
     "email": null,
-    "website": null,
+    "website": "http://www.cooppathum.com/",
     "orderIndex": 19,
     "createdAt": "2026-08-28T01:43:24.418Z",
     "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -425,7 +425,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
     "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
     "phone": "0-2581-6327",
     "email": null,
-    "website": null,
+    "website": "https://pathumthani.doae.go.th/",
     "orderIndex": 20,
     "createdAt": "2026-08-28T01:43:24.429Z",
     "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -444,7 +444,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
     "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
     "phone": "0-2581-6373",
     "email": null,
-    "website": null,
+    "website": "http://www.fisheries.go.th/fpo-pathumtani",
     "orderIndex": 21,
     "createdAt": "2026-08-28T01:43:24.440Z",
     "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -463,7 +463,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
     "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
     "phone": "0-2501-2169",
     "email": null,
-    "website": null,
+    "website": "http://www.dld.go.th/pvlo_ptn/",
     "orderIndex": 22,
     "createdAt": "2026-08-28T01:43:24.451Z",
     "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -482,7 +482,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
     "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
     "phone": "0-2567-0796",
     "email": null,
-    "website": null,
+    "website": "http://alro.go.th/th/phatumthani",
     "orderIndex": 23,
     "createdAt": "2026-08-28T01:43:24.463Z",
     "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -501,7 +501,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
     "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
     "phone": "0-2529-4993-5",
     "email": null,
-    "website": null,
+    "website": "http://www.cooppathum.com/",
     "orderIndex": 24,
     "createdAt": "2026-08-28T01:43:24.474Z",
     "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -520,7 +520,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
     "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
     "phone": "0-2581-5015",
     "email": null,
-    "website": null,
+    "website": "http://www.industry.go.th/ops/pio/pathumthani/Page/home.aspx",
     "orderIndex": 25,
     "createdAt": "2026-08-28T01:43:24.484Z",
     "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -558,7 +558,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
     "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
     "phone": "0-2567-0224",
     "email": null,
-    "website": null,
+    "website": "http://pcoc.moc.go.th/wappPCOC/13/default.aspx",
     "orderIndex": 27,
     "createdAt": "2026-08-28T01:43:24.508Z",
     "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -577,7 +577,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
     "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
     "phone": "0-2581-6772",
     "email": null,
-    "website": null,
+    "website": "https://pathumthani.nso.go.th/",
     "orderIndex": 28,
     "createdAt": "2026-08-28T01:43:24.518Z",
     "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -596,7 +596,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
     "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
     "phone": "0-2581-7955",
     "email": null,
-    "website": null,
+    "website": "https://pathumthani.mol.go.th/",
     "orderIndex": 29,
     "createdAt": "2026-08-28T01:43:24.529Z",
     "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -615,7 +615,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
     "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
     "phone": "0-2567-5101-2",
     "email": null,
-    "website": null,
+    "website": "https://pathumthani.mol.go.th/",
     "orderIndex": 30,
     "createdAt": "2026-08-28T01:43:24.539Z",
     "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -634,7 +634,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
     "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
     "phone": "0-2567-0360-6",
     "email": null,
-    "website": null,
+    "website": "http://web2.sso.go.th/pathumthani/main.htm",
     "orderIndex": 31,
     "createdAt": "2026-08-28T01:43:24.551Z",
     "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -653,7 +653,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
     "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
     "phone": "0-2581-6554",
     "email": null,
-    "website": null,
+    "website": "https://www.ptno.moph.go.th/",
     "orderIndex": 32,
     "createdAt": "2026-08-28T01:43:24.561Z",
     "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -672,7 +672,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
     "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
     "phone": "0-2593-4406",
     "email": null,
-    "website": null,
+    "website": "http://www.pathumthaniculture.com/",
     "orderIndex": 33,
     "createdAt": "2026-08-28T01:43:24.571Z",
     "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -691,7 +691,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
     "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
     "phone": "0-2581-1189",
     "email": null,
-    "website": null,
+    "website": "https://pte.onab.go.th/",
     "orderIndex": 34,
     "createdAt": "2026-08-28T01:43:24.581Z",
     "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -729,7 +729,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
     "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
     "phone": "0-2581-4528",
     "email": null,
-    "website": null,
+    "website": "http://www.dlt.go.th/pathumthani/",
     "orderIndex": 36,
     "createdAt": "2026-08-28T01:43:24.598Z",
     "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -862,7 +862,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
     "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
     "phone": "0-2567-5917",
     "email": null,
-    "website": null,
+    "website": "https://pathumthani.disaster.go.th/",
     "orderIndex": 43,
     "createdAt": "2026-08-28T01:43:24.669Z",
     "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -881,7 +881,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
     "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
     "phone": "0-2959-6641",
     "email": null,
-    "website": null,
+    "website": "https://pathumthani.disaster.go.th/",
     "orderIndex": 44,
     "createdAt": "2026-08-28T01:43:24.678Z",
     "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -1394,7 +1394,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
     "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
     "phone": "0-2501-2438",
     "email": null,
-    "website": null,
+    "website": "http://www.dld.go.th/pvlo_ptn/",
     "orderIndex": 71,
     "createdAt": "2026-08-28T01:43:24.922Z",
     "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -1451,7 +1451,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
     "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
     "phone": "0-2501-3177-8",
     "email": null,
-    "website": null,
+    "website": "http://www.dld.go.th/pvlo_ptn/",
     "orderIndex": 74,
     "createdAt": "2026-08-28T01:43:24.948Z",
     "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -1470,7 +1470,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
     "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
     "phone": "0-2967-9700",
     "email": null,
-    "website": null,
+    "website": "http://www.dld.go.th/pvlo_ptn/",
     "orderIndex": 75,
     "createdAt": "2026-08-28T01:43:24.959Z",
     "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -1527,7 +1527,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
     "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
     "phone": "0-2581-6669",
     "email": null,
-    "website": null,
+    "website": "https://pathumthani.cad.go.th/",
     "orderIndex": 78,
     "createdAt": "2026-08-28T01:43:24.986Z",
     "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -1907,7 +1907,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
     "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
     "phone": "0-2577-5867-9",
     "email": null,
-    "website": null,
+    "website": "https://pathumthani.mol.go.th/",
     "orderIndex": 98,
     "createdAt": "2026-08-28T01:43:25.185Z",
     "updatedAt": "2026-08-28T08:53:05.108Z"
@@ -2477,7 +2477,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
     "address": "เลขที่ 99 หมู่ 2 ถนนปทุมธานี-สายใน ตำบลบางขะแยง อำเภอเมืองปทุมธานี 12000",
     "phone": "0-2975-8940-9",
     "email": null,
-    "website": "https://pathumpao.go.th",
+    "website": "https://pathumpao.go.th/",
     "orderIndex": 128,
     "createdAt": "2026-08-28T01:43:25.498Z",
     "updatedAt": "2026-08-28T02:10:52.729Z"
@@ -4111,7 +4111,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
     "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
     "phone": "0-2581-6303",
     "email": null,
-    "website": null,
+    "website": "https://pttc.coj.go.th/",
     "orderIndex": 213,
     "createdAt": "2026-08-28T01:43:26.297Z",
     "updatedAt": "2026-08-28T01:43:26.297Z"
@@ -4168,7 +4168,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
     "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
     "phone": "0-2598-2631-3",
     "email": null,
-    "website": null,
+    "website": "http://www.nacc.go.th/ewtadmin/ewt/pathumthani/main.php?filename=index",
     "orderIndex": 216,
     "createdAt": "2026-08-28T01:43:26.330Z",
     "updatedAt": "2026-08-28T01:43:26.330Z"
@@ -4225,7 +4225,7 @@ export const INITIAL_ORGANIZATIONS: BundledOrganization[] = [
     "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
     "phone": "0-2501-2284",
     "email": null,
-    "website": null,
+    "website": "http://www.industry.go.th/ops/pio/pathumthani/Page/home.aspx",
     "orderIndex": 219,
     "createdAt": "2026-08-28T01:43:26.358Z",
     "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -5369,7 +5369,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
       "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
       "phone": "0-2581-6301",
       "email": null,
-      "website": null,
+      "website": "http://nam.dol.go.th/pathumthani",
       "orderIndex": 9,
       "createdAt": "2026-08-28T01:43:24.309Z",
       "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -5639,7 +5639,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
       "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
       "phone": "0-2581-7120",
       "email": null,
-      "website": null,
+      "website": "https://pathumthani.disaster.go.th/",
       "orderIndex": 14,
       "createdAt": "2026-08-28T01:43:24.359Z",
       "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -5747,7 +5747,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
       "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
       "phone": "0-2581-2121",
       "email": null,
-      "website": null,
+      "website": "http://pr.prd.go.th/pathumthani/",
       "orderIndex": 16,
       "createdAt": "2026-08-28T01:43:24.381Z",
       "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -5801,7 +5801,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
       "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
       "phone": "0-2581-6305",
       "email": null,
-      "website": null,
+      "website": "http://cgd.pathumthanipoc.com/main/",
       "orderIndex": 17,
       "createdAt": "2026-08-28T01:43:24.395Z",
       "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -5855,7 +5855,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
       "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
       "phone": "0-2581-6043",
       "email": null,
-      "website": null,
+      "website": "https://pathumthani.m-society.go.th/",
       "orderIndex": 18,
       "createdAt": "2026-08-28T01:43:24.406Z",
       "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -5909,7 +5909,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
       "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
       "phone": "0-2593-4351",
       "email": null,
-      "website": null,
+      "website": "http://www.cooppathum.com/",
       "orderIndex": 19,
       "createdAt": "2026-08-28T01:43:24.418Z",
       "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -5963,7 +5963,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
       "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
       "phone": "0-2581-6327",
       "email": null,
-      "website": null,
+      "website": "https://pathumthani.doae.go.th/",
       "orderIndex": 20,
       "createdAt": "2026-08-28T01:43:24.429Z",
       "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -6017,7 +6017,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
       "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
       "phone": "0-2581-6373",
       "email": null,
-      "website": null,
+      "website": "http://www.fisheries.go.th/fpo-pathumtani",
       "orderIndex": 21,
       "createdAt": "2026-08-28T01:43:24.440Z",
       "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -6071,7 +6071,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
       "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
       "phone": "0-2501-2169",
       "email": null,
-      "website": null,
+      "website": "http://www.dld.go.th/pvlo_ptn/",
       "orderIndex": 22,
       "createdAt": "2026-08-28T01:43:24.451Z",
       "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -6125,7 +6125,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
       "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
       "phone": "0-2567-0796",
       "email": null,
-      "website": null,
+      "website": "http://alro.go.th/th/phatumthani",
       "orderIndex": 23,
       "createdAt": "2026-08-28T01:43:24.463Z",
       "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -6179,7 +6179,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
       "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
       "phone": "0-2529-4993-5",
       "email": null,
-      "website": null,
+      "website": "http://www.cooppathum.com/",
       "orderIndex": 24,
       "createdAt": "2026-08-28T01:43:24.474Z",
       "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -6233,7 +6233,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
       "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
       "phone": "0-2581-5015",
       "email": null,
-      "website": null,
+      "website": "http://www.industry.go.th/ops/pio/pathumthani/Page/home.aspx",
       "orderIndex": 25,
       "createdAt": "2026-08-28T01:43:24.484Z",
       "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -6341,7 +6341,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
       "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
       "phone": "0-2567-0224",
       "email": null,
-      "website": null,
+      "website": "http://pcoc.moc.go.th/wappPCOC/13/default.aspx",
       "orderIndex": 27,
       "createdAt": "2026-08-28T01:43:24.508Z",
       "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -6363,7 +6363,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
   {
     "id": "cmtcafcru004tqnm6z6m2pclv",
     "prefix": "นาย",
-    "firstName": "บุญฤทธิ",
+    "firstName": "บุญฤทธิ์",
     "lastName": "อดิพัฒน์",
     "position": "สถิติจังหวัดปทุมธานี",
     "positionLevel": "อำนวยการระดับสูง",
@@ -6395,7 +6395,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
       "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
       "phone": "0-2581-6772",
       "email": null,
-      "website": null,
+      "website": "https://pathumthani.nso.go.th/",
       "orderIndex": 28,
       "createdAt": "2026-08-28T01:43:24.518Z",
       "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -6449,7 +6449,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
       "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
       "phone": "0-2581-7955",
       "email": null,
-      "website": null,
+      "website": "https://pathumthani.mol.go.th/",
       "orderIndex": 29,
       "createdAt": "2026-08-28T01:43:24.529Z",
       "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -6503,7 +6503,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
       "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
       "phone": "0-2567-5101-2",
       "email": null,
-      "website": null,
+      "website": "https://pathumthani.mol.go.th/",
       "orderIndex": 30,
       "createdAt": "2026-08-28T01:43:24.539Z",
       "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -6557,7 +6557,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
       "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
       "phone": "0-2567-0360-6",
       "email": null,
-      "website": null,
+      "website": "http://web2.sso.go.th/pathumthani/main.htm",
       "orderIndex": 31,
       "createdAt": "2026-08-28T01:43:24.551Z",
       "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -6611,7 +6611,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
       "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
       "phone": "0-2581-6554",
       "email": null,
-      "website": null,
+      "website": "https://www.ptno.moph.go.th/",
       "orderIndex": 32,
       "createdAt": "2026-08-28T01:43:24.561Z",
       "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -6665,7 +6665,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
       "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
       "phone": "0-2593-4406",
       "email": null,
-      "website": null,
+      "website": "http://www.pathumthaniculture.com/",
       "orderIndex": 33,
       "createdAt": "2026-08-28T01:43:24.571Z",
       "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -6719,7 +6719,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
       "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
       "phone": "0-2581-1189",
       "email": null,
-      "website": null,
+      "website": "https://pte.onab.go.th/",
       "orderIndex": 34,
       "createdAt": "2026-08-28T01:43:24.581Z",
       "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -6827,7 +6827,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
       "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
       "phone": "0-2581-4528",
       "email": null,
-      "website": null,
+      "website": "http://www.dlt.go.th/pathumthani/",
       "orderIndex": 36,
       "createdAt": "2026-08-28T01:43:24.598Z",
       "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -7205,7 +7205,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
       "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
       "phone": "0-2567-5917",
       "email": null,
-      "website": null,
+      "website": "https://pathumthani.disaster.go.th/",
       "orderIndex": 43,
       "createdAt": "2026-08-28T01:43:24.669Z",
       "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -7259,7 +7259,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
       "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
       "phone": "0-2959-6641",
       "email": null,
-      "website": null,
+      "website": "https://pathumthani.disaster.go.th/",
       "orderIndex": 44,
       "createdAt": "2026-08-28T01:43:24.678Z",
       "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -8717,7 +8717,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
       "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
       "phone": "0-2501-2438",
       "email": null,
-      "website": null,
+      "website": "http://www.dld.go.th/pvlo_ptn/",
       "orderIndex": 71,
       "createdAt": "2026-08-28T01:43:24.922Z",
       "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -8879,7 +8879,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
       "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
       "phone": "0-2501-3177-8",
       "email": null,
-      "website": null,
+      "website": "http://www.dld.go.th/pvlo_ptn/",
       "orderIndex": 74,
       "createdAt": "2026-08-28T01:43:24.948Z",
       "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -8933,7 +8933,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
       "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
       "phone": "0-2967-9700",
       "email": null,
-      "website": null,
+      "website": "http://www.dld.go.th/pvlo_ptn/",
       "orderIndex": 75,
       "createdAt": "2026-08-28T01:43:24.959Z",
       "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -9095,7 +9095,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
       "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
       "phone": "0-2581-6669",
       "email": null,
-      "website": null,
+      "website": "https://pathumthani.cad.go.th/",
       "orderIndex": 78,
       "createdAt": "2026-08-28T01:43:24.986Z",
       "updatedAt": "2026-08-28T01:43:26.429Z"
@@ -10229,7 +10229,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
       "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
       "phone": "0-2577-5867-9",
       "email": null,
-      "website": null,
+      "website": "https://pathumthani.mol.go.th/",
       "orderIndex": 98,
       "createdAt": "2026-08-28T01:43:25.185Z",
       "updatedAt": "2026-08-28T08:53:05.108Z"
@@ -12227,7 +12227,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
       "address": "เลขที่ 99 หมู่ 2 ถนนปทุมธานี-สายใน ตำบลบางขะแยง อำเภอเมืองปทุมธานี 12000",
       "phone": "0-2975-8940-9",
       "email": null,
-      "website": "https://pathumpao.go.th",
+      "website": "https://pathumpao.go.th/",
       "orderIndex": 128,
       "createdAt": "2026-08-28T01:43:25.498Z",
       "updatedAt": "2026-08-28T02:10:52.729Z"
@@ -16871,7 +16871,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
       "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
       "phone": "0-2581-6303",
       "email": null,
-      "website": null,
+      "website": "https://pttc.coj.go.th/",
       "orderIndex": 213,
       "createdAt": "2026-08-28T01:43:26.297Z",
       "updatedAt": "2026-08-28T01:43:26.297Z"
@@ -16979,7 +16979,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
       "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
       "phone": "0-2581-6303",
       "email": null,
-      "website": null,
+      "website": "https://pttc.coj.go.th/",
       "orderIndex": 213,
       "createdAt": "2026-08-28T01:43:26.297Z",
       "updatedAt": "2026-08-28T01:43:26.297Z"
@@ -17087,7 +17087,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
       "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
       "phone": "0-2598-2631-3",
       "email": null,
-      "website": null,
+      "website": "http://www.nacc.go.th/ewtadmin/ewt/pathumthani/main.php?filename=index",
       "orderIndex": 216,
       "createdAt": "2026-08-28T01:43:26.330Z",
       "updatedAt": "2026-08-28T01:43:26.330Z"
@@ -17249,7 +17249,7 @@ export const INITIAL_EXECUTIVES: BundledExecutive[] = [
       "address": "ศาลากลางจังหวัดปทุมธานี ถนนปทุมธานีเฉลิมพระเกียรติ ตำบลบางปรอก อำเภอเมืองปทุมธานี 12000",
       "phone": "0-2501-2284",
       "email": null,
-      "website": null,
+      "website": "http://www.industry.go.th/ops/pio/pathumthani/Page/home.aspx",
       "orderIndex": 219,
       "createdAt": "2026-08-28T01:43:26.358Z",
       "updatedAt": "2026-08-28T01:43:26.429Z"
