@@ -1,15 +1,20 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || '';
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || '';
+const SUPABASE_PROJECT_URL =
+  process.env.NEXT_PUBLIC_SUPABASE_URL ||
+  process.env.SUPABASE_URL ||
+  'https://lygsmthmtaqchldoiovu.supabase.co';
 
-export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseKey);
+const SUPABASE_API_KEY =
+  process.env.SUPABASE_SERVICE_ROLE_KEY ||
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+  process.env.SUPABASE_ANON_KEY ||
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx5Z3NtdGhtdGFxY2hsZG9pb3Z1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgyMjkzODMsImV4cCI6MjEwMzgwNTM4M30.XgTtKbn4nl_EYVD-x6QQiwrznnh3VNl8ESkafIdBd60';
+
+export const isSupabaseConfigured = Boolean(SUPABASE_PROJECT_URL && SUPABASE_API_KEY);
 
 export function getSupabaseClient() {
-  if (!isSupabaseConfigured) {
-    return null;
-  }
-  return createClient(supabaseUrl, supabaseKey, {
+  return createClient(SUPABASE_PROJECT_URL, SUPABASE_API_KEY, {
     auth: {
       persistSession: false,
     },
@@ -27,12 +32,6 @@ export async function uploadAvatarToSupabase(
   contentType: string = 'image/jpeg'
 ): Promise<{ success: boolean; url?: string; error?: string }> {
   const supabase = getSupabaseClient();
-  if (!supabase) {
-    return {
-      success: false,
-      error: 'Supabase is not configured (missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY)',
-    };
-  }
 
   try {
     const cleanFileName = fileName.replace(/[^a-zA-Z0-9._-]/g, '_');
