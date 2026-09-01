@@ -6,6 +6,12 @@ import {
   BundledOrganization,
   BundledExecutive,
 } from './database-store';
+import {
+  mergeExecutivesWithCloudState,
+  saveCloudExecutiveOverride,
+  saveCloudExecutiveCreate,
+  saveCloudExecutiveDelete,
+} from './cloud-store';
 
 // In-memory runtime state for Cloudflare Serverless instances
 const inMemoryOrgs: BundledOrganization[] = [...INITIAL_ORGANIZATIONS];
@@ -38,7 +44,9 @@ export async function getExecutives(params: ExecutiveQueryParams = {}) {
     offset = 0,
   } = params;
 
-  let filtered = [...inMemoryExecs];
+  // Real-time Cloud State merged on top of base executives
+  const liveExecs = await mergeExecutivesWithCloudState(inMemoryExecs);
+  let filtered = [...liveExecs];
 
   if (level && level !== 'ALL') {
     filtered = filtered.filter((e) => e.organization?.level === level);
@@ -73,7 +81,8 @@ export async function getExecutives(params: ExecutiveQueryParams = {}) {
 }
 
 export async function getExecutiveById(id: string) {
-  const exec = inMemoryExecs.find((e) => e.id === id);
+  const liveExecs = await mergeExecutivesWithCloudState(inMemoryExecs);
+  const exec = liveExecs.find((e) => e.id === id);
   if (!exec) return null;
   const histories = inMemoryHistories.filter((h) => h.executiveId === id);
   return {
@@ -138,6 +147,9 @@ export async function createExecutiveRecord(data: any) {
     performedBy: data.adminName || 'ผู้ดูแลระบบ',
     timestamp: new Date().toISOString(),
   });
+
+  // Persist to Supabase Cloud Storage
+  await saveCloudExecutiveCreate(newExec);
 
   return newExec;
 }
@@ -206,6 +218,27 @@ export async function updateExecutiveRecord(id: string, data: any) {
     timestamp: new Date().toISOString(),
   });
 
+  // Persist to Supabase Cloud Storage
+  await saveCloudExecutiveOverride(id, {
+    prefix: updated.prefix,
+    firstName: updated.firstName,
+    lastName: updated.lastName,
+    position: updated.position,
+    positionLevel: updated.positionLevel,
+    organizationId: updated.organizationId,
+    status: updated.status,
+    appointmentDate: updated.appointmentDate,
+    endDate: updated.endDate,
+    orderReference: updated.orderReference,
+    phone: updated.phone,
+    email: updated.email,
+    avatarUrl: updated.avatarUrl,
+    photoVerified: updated.photoVerified,
+    photoSource: updated.photoSource,
+    bio: updated.bio,
+    orderIndex: updated.orderIndex,
+  });
+
   return updated;
 }
 
@@ -227,6 +260,9 @@ export async function deleteExecutiveRecord(id: string) {
     timestamp: new Date().toISOString(),
   });
 
+  // Persist deletion to Supabase Cloud Storage
+  await saveCloudExecutiveDelete(id);
+
   return true;
 }
 
@@ -247,10 +283,12 @@ export async function getOrganizations(params: { level?: string; province?: stri
     );
   }
 
+  const liveExecs = await mergeExecutivesWithCloudState(inMemoryExecs);
+
   return filtered.map((o) => ({
     ...o,
     _count: {
-      executives: inMemoryExecs.filter((e) => e.organizationId === o.id).length,
+      executives: liveExecs.filter((e) => e.organizationId === o.id).length,
       children: inMemoryOrgs.filter((c) => c.parentId === o.id).length,
     },
   }));
@@ -261,7 +299,8 @@ export async function getOrganizationById(id: string) {
   if (!org) return null;
   const parent = org.parentId ? inMemoryOrgs.find((p) => p.id === org.parentId) : null;
   const children = inMemoryOrgs.filter((c) => c.parentId === id);
-  const executives = inMemoryExecs.filter((e) => e.organizationId === id);
+  const liveExecs = await mergeExecutivesWithCloudState(inMemoryExecs);
+  const executives = liveExecs.filter((e) => e.organizationId === id);
   return {
     ...org,
     parent,
@@ -332,16 +371,18 @@ export async function deleteOrganizationRecord(id: string) {
 }
 
 export async function getStats() {
-  const totalExecutives = inMemoryExecs.length;
-  const activeCount = inMemoryExecs.filter((e) => e.status === 'ACTIVE').length;
-  const actingCount = inMemoryExecs.filter((e) => e.status === 'ACTING').length;
-  const vacantCount = inMemoryExecs.filter((e) => e.status === 'VACANT').length;
-  const retiredCount = inMemoryExecs.filter((e) => e.status === 'RETIRED').length;
+  const liveExecs = await mergeExecutivesWithCloudState(inMemoryExecs);
+
+  const totalExecutives = liveExecs.length;
+  const activeCount = liveExecs.filter((e) => e.status === 'ACTIVE').length;
+  const actingCount = liveExecs.filter((e) => e.status === 'ACTING').length;
+  const vacantCount = liveExecs.filter((e) => e.status === 'VACANT').length;
+  const retiredCount = liveExecs.filter((e) => e.status === 'RETIRED').length;
   const totalOrganizations = inMemoryOrgs.length;
-  const centralCount = inMemoryExecs.filter((e) => e.organization?.level === 'CENTRAL').length;
-  const provincialCount = inMemoryExecs.filter((e) => e.organization?.level === 'PROVINCIAL').length;
-  const districtCount = inMemoryExecs.filter((e) => e.organization?.level === 'DISTRICT').length;
-  const localCount = inMemoryExecs.filter((e) => e.organization?.level === 'LOCAL').length;
+  const centralCount = liveExecs.filter((e) => e.organization?.level === 'CENTRAL').length;
+  const provincialCount = liveExecs.filter((e) => e.organization?.level === 'PROVINCIAL').length;
+  const districtCount = liveExecs.filter((e) => e.organization?.level === 'DISTRICT').length;
+  const localCount = liveExecs.filter((e) => e.organization?.level === 'LOCAL').length;
 
   const categoryCounts: Record<string, number> = {};
   inMemoryOrgs.forEach((o) => {
