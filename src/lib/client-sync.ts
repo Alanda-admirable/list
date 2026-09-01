@@ -7,6 +7,9 @@ const STORAGE_KEY_OVERRIDES = 'thaigov_executive_overrides';
 const STORAGE_KEY_DELETED = 'thaigov_executive_deleted';
 const STORAGE_KEY_CREATED = 'thaigov_executive_created';
 
+export const SUPABASE_STORAGE_OVERRIDES_URL =
+  'https://lygsmthmtaqchldoiovu.supabase.co/storage/v1/object/public/avatars/database/overrides.json';
+
 export interface ExecutiveOverride {
   id: string;
   prefix?: string;
@@ -28,6 +31,24 @@ export interface ExecutiveOverride {
   bio?: string | null;
   orderIndex?: number;
   updatedAt?: string;
+}
+
+// Direct client-side fetch of cloud overrides from Supabase Public Storage
+export async function fetchCloudOverridesClient(): Promise<Record<string, ExecutiveOverride>> {
+  if (typeof window === 'undefined') return {};
+  try {
+    const res = await fetch(`${SUPABASE_STORAGE_OVERRIDES_URL}?_t=${Date.now()}`, {
+      cache: 'no-store',
+    });
+    if (res.ok) {
+      const data = await res.json();
+      return data && typeof data === 'object' ? data : {};
+    }
+    return {};
+  } catch (err) {
+    console.warn('Could not fetch cloud overrides directly on client:', err);
+    return {};
+  }
 }
 
 // Get all stored overrides from localStorage
@@ -95,7 +116,6 @@ export function saveExecutiveCreateLocally(newItem: Executive) {
   if (typeof window === 'undefined') return;
   try {
     const created = getLocalCreatedItems();
-    // Filter out duplicate
     const filtered = created.filter((c) => c.id !== newItem.id);
     filtered.unshift(newItem);
     localStorage.setItem(STORAGE_KEY_CREATED, JSON.stringify(filtered));
@@ -116,7 +136,6 @@ export function saveExecutiveDeleteLocally(id: string) {
       localStorage.setItem(STORAGE_KEY_DELETED, JSON.stringify(deleted));
     }
 
-    // Remove from created and overrides
     const created = getLocalCreatedItems().filter((c) => c.id !== id);
     localStorage.setItem(STORAGE_KEY_CREATED, JSON.stringify(created));
 
@@ -130,24 +149,33 @@ export function saveExecutiveDeleteLocally(id: string) {
   }
 }
 
-// Merge server executive array with client local overrides
-export function mergeWithLocalData(serverExecutives: Executive[]): Executive[] {
+// Merge server executive array with client local & cloud overrides
+export function mergeWithLocalData(
+  serverExecutives: Executive[],
+  cloudOverrides: Record<string, any> = {}
+): Executive[] {
   if (typeof window === 'undefined') return serverExecutives;
 
-  const overrides = getLocalOverrides();
+  const localOverrides = getLocalOverrides();
   const deletedIds = getLocalDeletedIds();
   const createdItems = getLocalCreatedItems();
+
+  const combinedOverrides = {
+    ...cloudOverrides,
+    ...localOverrides,
+  };
 
   // 1. Filter out deleted items
   let result = serverExecutives.filter((e) => !deletedIds.includes(e.id));
 
-  // 2. Apply overrides
+  // 2. Apply combined overrides
   result = result.map((e) => {
-    if (overrides[e.id]) {
+    if (combinedOverrides[e.id]) {
+      const ov = combinedOverrides[e.id];
       return {
         ...e,
-        ...overrides[e.id],
-        organization: overrides[e.id].organization || e.organization,
+        ...ov,
+        organization: ov.organization || e.organization,
       } as Executive;
     }
     return e;
@@ -186,4 +214,3 @@ export function useExecutiveSync(onSync: () => void) {
     };
   }, [onSync]);
 }
-

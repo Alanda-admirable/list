@@ -5,7 +5,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { ALL_PROVINCES, ORG_LEVELS, STATUS_LABELS } from '@/lib/thai-data';
 import { Executive } from '@/components/ExecutiveCard';
-import { mergeWithLocalData, useExecutiveSync } from '@/lib/client-sync';
+import { mergeWithLocalData, useExecutiveSync, fetchCloudOverridesClient } from '@/lib/client-sync';
 import {
   Printer,
   FileSpreadsheet,
@@ -68,11 +68,13 @@ export default function ReportExportPage() {
       const res = await fetch(`/api/organizations?${params.toString()}`, { cache: 'no-store' });
       const data = await res.json();
       if (data.success) {
-        // Fetch full executives and apply client local overrides
-        const orgsRes = await fetch(`/api/executives?limit=1000&_t=${Date.now()}`, { cache: 'no-store' });
-        const execsData = await orgsRes.json();
-        const rawExecsList: Executive[] = execsData.data || [];
-        const execsList: Executive[] = mergeWithLocalData(rawExecsList);
+        // Fetch full executives and apply client local & cloud overrides
+        const [orgsRes, cloudOverrides] = await Promise.all([
+          fetch(`/api/executives?limit=1000&_t=${Date.now()}`, { cache: 'no-store' }).then((r) => r.json()),
+          fetchCloudOverridesClient(),
+        ]);
+        const rawExecsList: Executive[] = orgsRes.data || [];
+        const execsList: Executive[] = mergeWithLocalData(rawExecsList, cloudOverrides);
 
         // Group executives by organizationId
         const execsByOrg: Record<string, Executive[]> = {};

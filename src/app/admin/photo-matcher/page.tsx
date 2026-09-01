@@ -17,7 +17,7 @@ import {
   ArrowLeft,
 } from 'lucide-react';
 import Link from 'next/link';
-import { mergeWithLocalData, saveExecutiveUpdateLocally } from '@/lib/client-sync';
+import { mergeWithLocalData, saveExecutiveUpdateLocally, fetchCloudOverridesClient } from '@/lib/client-sync';
 
 interface ExecutiveItem {
   id: string;
@@ -60,10 +60,12 @@ export default function PhotoMatcherPage() {
   const fetchExecutives = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/executives?limit=1000&_t=${Date.now()}`, { cache: 'no-store' });
-      const data = await res.json();
-      if (data.success && Array.isArray(data.data)) {
-        const merged = mergeWithLocalData(data.data);
+      const [dataRes, cloudOverrides] = await Promise.all([
+        fetch(`/api/executives?limit=1000&_t=${Date.now()}`, { cache: 'no-store' }).then((r) => r.json()),
+        fetchCloudOverridesClient(),
+      ]);
+      if (dataRes.success && Array.isArray(dataRes.data)) {
+        const merged = mergeWithLocalData(dataRes.data, cloudOverrides);
         setExecutives(merged as any);
       }
     } catch (e) {

@@ -8,7 +8,7 @@ import OrgChartTree from '@/components/OrgChartTree';
 import ExecutiveModal from '@/components/ExecutiveModal';
 import { Executive } from '@/components/ExecutiveCard';
 import { ALL_PROVINCES, ORG_LEVELS } from '@/lib/thai-data';
-import { mergeWithLocalData, useExecutiveSync } from '@/lib/client-sync';
+import { mergeWithLocalData, useExecutiveSync, fetchCloudOverridesClient } from '@/lib/client-sync';
 import {
   Network,
   Loader2,
@@ -36,16 +36,16 @@ export default function OrgChartPage() {
   const [drilldownStack, setDrilldownStack] = useState<any[]>([]);
   const [selectedExecutive, setSelectedExecutive] = useState<Executive | null>(null);
 
-  // Recursively apply local executive overrides to tree nodes
-  const applyLocalSyncToTree = useCallback((nodes: any[]): any[] => {
+  // Recursively apply local & cloud executive overrides to tree nodes
+  const applyLocalSyncToTree = useCallback((nodes: any[], cloudOverrides: Record<string, any> = {}): any[] => {
     return nodes.map((node) => {
       const mergedExecs = node.executives && Array.isArray(node.executives)
-        ? mergeWithLocalData(node.executives)
+        ? mergeWithLocalData(node.executives, cloudOverrides)
         : [];
       return {
         ...node,
         executives: mergedExecs,
-        children: node.children ? applyLocalSyncToTree(node.children) : [],
+        children: node.children ? applyLocalSyncToTree(node.children, cloudOverrides) : [],
       };
     });
   }, []);
@@ -57,16 +57,17 @@ export default function OrgChartPage() {
       params.append('tree', 'true');
       if (selectedLevel !== 'ALL') params.append('level', selectedLevel);
       if (selectedProvince) params.append('province', selectedProvince);
-      params.append('_t', Date.now().toString());
 
-      const res = await fetch(`/api/organizations?${params.toString()}`, { cache: 'no-store' });
-      const data = await res.json();
-      if (data.success && Array.isArray(data.data)) {
-        const syncedTree = applyLocalSyncToTree(data.data);
+      const [dataRes, cloudOverrides] = await Promise.all([
+        fetch(`/api/organizations?${params.toString()}`, { cache: 'no-store' }).then((r) => r.json()),
+        fetchCloudOverridesClient(),
+      ]);
+      if (dataRes.success && Array.isArray(dataRes.data)) {
+        const syncedTree = applyLocalSyncToTree(dataRes.data, cloudOverrides);
         setTreeData(syncedTree);
       }
     } catch (e) {
-      console.error('Failed to load org tree', e);
+      console.error('Failed to load org chart tree', e);
     } finally {
       setLoading(false);
     }

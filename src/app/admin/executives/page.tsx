@@ -7,7 +7,7 @@ import ExecutiveFormModal from '@/components/ExecutiveFormModal';
 import ExecutiveModal from '@/components/ExecutiveModal';
 import { Executive } from '@/components/ExecutiveCard';
 import { STATUS_LABELS, ALL_PROVINCES, ORG_LEVELS } from '@/lib/thai-data';
-import { mergeWithLocalData } from '@/lib/client-sync';
+import { mergeWithLocalData, fetchCloudOverridesClient } from '@/lib/client-sync';
 import {
   Users,
   PlusCircle,
@@ -57,13 +57,13 @@ export default function AdminExecutivesPage() {
       if (level !== 'ALL') params.append('level', level);
       if (province) params.append('province', province);
       if (status) params.append('status', status);
-      params.append('limit', '1000');
-      params.append('_t', Date.now().toString());
+      const [dataRes, cloudOverrides] = await Promise.all([
+        fetch(`/api/executives?${params.toString()}`, { cache: 'no-store' }).then((r) => r.json()),
+        fetchCloudOverridesClient(),
+      ]);
 
-      const res = await fetch(`/api/executives?${params.toString()}`, { cache: 'no-store' });
-      const data = await res.json();
-      if (data.success && Array.isArray(data.data)) {
-        const merged = mergeWithLocalData(data.data);
+      if (dataRes.success && Array.isArray(dataRes.data)) {
+        const merged = mergeWithLocalData(dataRes.data, cloudOverrides);
         setExecutives(merged);
       }
     } catch (e) {

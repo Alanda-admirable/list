@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { STATUS_LABELS } from '@/lib/thai-data';
-import { mergeWithLocalData, useExecutiveSync } from '@/lib/client-sync';
+import { mergeWithLocalData, useExecutiveSync, fetchCloudOverridesClient } from '@/lib/client-sync';
 import ExecutiveCardSkeleton from '@/components/ExecutiveCardSkeleton';
 
 export default function DirectoryPage() {
@@ -62,13 +62,13 @@ export default function DirectoryPage() {
       if (selectedDistrict) params.append('district', selectedDistrict);
       if (selectedCategory) params.append('category', selectedCategory);
       if (selectedStatus) params.append('status', selectedStatus);
-      params.append('limit', '1000');
-      params.append('_t', Date.now().toString());
+      const [dataRes, cloudOverrides] = await Promise.all([
+        fetch(`/api/executives?${params.toString()}`, { cache: 'no-store' }).then((r) => r.json()),
+        fetchCloudOverridesClient(),
+      ]);
 
-      const res = await fetch(`/api/executives?${params.toString()}`, { cache: 'no-store' });
-      const data = await res.json();
-      if (data.success && Array.isArray(data.data)) {
-        const merged = mergeWithLocalData(data.data);
+      if (dataRes.success && Array.isArray(dataRes.data)) {
+        const merged = mergeWithLocalData(dataRes.data, cloudOverrides);
         setExecutives(merged);
       }
     } catch (e) {
